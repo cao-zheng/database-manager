@@ -5,8 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * 动态数据库源.
@@ -29,7 +28,9 @@ public class DynamicDataSource extends HikariDataSource {
             log.error("数据源未创建");
             return null;
         } else {
-            return dataSource.getConnection();
+            Connection connection = dataSource.getConnection();
+            System.out.println(connection.getMetaData());
+            return connection;
         }
     }
 }

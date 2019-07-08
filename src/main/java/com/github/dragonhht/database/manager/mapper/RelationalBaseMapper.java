@@ -1,5 +1,6 @@
 package com.github.dragonhht.database.manager.mapper;
 
+import com.github.dragonhht.database.manager.model.ResultData;
 import com.github.dragonhht.database.manager.model.SqlStatement;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,6 @@ import java.util.Map;
 public interface RelationalBaseMapper {
 
     @Select("${sql}")
-    List<Map<String, Object>> selectList(SqlStatement statement);
+    List<ResultData> selectList(SqlStatement statement);
 
 }

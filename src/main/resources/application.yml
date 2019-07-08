@@ -16,3 +16,6 @@ spring:
 #  type-aliases-package: com.github.dragonhht.database.manager.model
 #  configuration:
 #    map-underscore-to-camel-case: true
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -2,9 +2,12 @@ package com.github.dragonhht.database.manager;
 
 import com.github.dragonhht.database.manager.mapper.RelationalBaseMapper;
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
+import com.github.dragonhht.database.manager.model.ResultData;
 import com.github.dragonhht.database.manager.model.SqlStatement;
 import com.github.dragonhht.database.manager.service.RelationalService;
 import com.github.dragonhht.database.manager.utils.DataSourceUtil;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ public class DatabaseManagerApplicationTests {
     private RelationalBaseMapper relationalBaseMapper;
     @Autowired
     private RelationalService relationalService;
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
 
     @Test
     public void contextLoads() {
@@ -36,13 +41,21 @@ public class DatabaseManagerApplicationTests {
         DataSourceUtil.INSTANCE.addDataSource("now", data);
         DataSourceUtil.setNowDataSource("now");
         SqlStatement sqlStatement = new SqlStatement("select * from db");
-
-        //List list = session.selectList("com.github.dragonhht.database.manager.mapper.BaseMapper.selectList", sqlStatement);
+//        SqlSession session = sqlSessionFactory.openSession();
+//        List list = session.selectList("com.github.dragonhht.database.manager.mapper.BaseMapper.selectList", sqlStatement);
         SqlStatement sqlStatement1 = new SqlStatement("select * from db");
-        List<List<Object>> list = relationalService.select("select * from db");
+        List<ResultData> list = relationalService.select("select * from db");
+
         list.forEach(item -> {
-            for (Object obj : item) {
-                System.out.printf("%-33s", obj);
+            if (item.getColumnNames() != null && item.getColumnNames().size() > 0) {
+                for (String key : item.getColumnNames()) {
+                    System.out.printf("%-33s", key);
+                }
+            }
+            if (item.getValues() != null && item.getValues().size() > 0) {
+                for (Object value : item.getValues()) {
+                    System.out.printf("%-33s", value);
+                }
             }
             System.out.println();
         });
