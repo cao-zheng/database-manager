@@ -1,13 +1,11 @@
 package com.github.dragonhht.database.manager;
 
-import com.github.dragonhht.database.manager.dto.PageInfo;
-import com.github.dragonhht.database.manager.mapper.RelationalBaseMapper;
-import com.github.dragonhht.database.manager.model.JdbcConnectionData;
+import com.github.dragonhht.database.manager.vo.PageInfo;
 import com.github.dragonhht.database.manager.dto.ResultData;
-import com.github.dragonhht.database.manager.dto.SqlStatement;
+import com.github.dragonhht.database.manager.model.JdbcConnectionData;
 import com.github.dragonhht.database.manager.service.RelationalService;
 import com.github.dragonhht.database.manager.utils.DataSourceUtil;
-import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +19,12 @@ import java.util.List;
 public class DatabaseManagerApplicationTests {
 
     @Autowired
-    private RelationalBaseMapper relationalBaseMapper;
-    @Autowired
     private RelationalService relationalService;
-    @Autowired
-    private SqlSessionFactory sqlSessionFactory;
 
-    @Test
-    public void contextLoads() {
+    @Before
+    public void init() {
         JdbcConnectionData data = new JdbcConnectionData();
-        //data.setUrl("jdbc:mysql://my.dragon.com:3307/mysql?useUnicode=true&characterEncoding=utf-8&useSSL=false");
-        data.setDataBaseName("mysql");
+        data.setDataBaseName("test");
         data.setHost("my.dragon.com");
         data.setPlatform("mysql");
         data.setPort(3307);
@@ -40,9 +33,57 @@ public class DatabaseManagerApplicationTests {
         data.setDriverClassName("com.mysql.jdbc.Driver");
         DataSourceUtil.INSTANCE.addDataSource("now", data);
         DataSourceUtil.setNowDataSource("now");
-        SqlStatement sqlStatement1 = new SqlStatement("select * from db");
-        PageInfo info = relationalService.select("select * from db");
+    }
+
+    @Test
+    public void testPageSelect() throws Exception {
+        PageInfo info = relationalService.select("select * from user");
         System.out.println(info);
+    }
+
+    @Test
+    public void testSelectList() throws Exception {
+        List<ResultData> list = relationalService.selectList("select u.id userId from user u");
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        int n = relationalService.update("update user set age = 20 where id = 1");
+        System.out.println(n);
+    }
+
+    @Test
+    public void testDel() throws Exception {
+        int n = relationalService.delete("delete from user where id = 1");
+        System.out.println(n);
+    }
+
+    @Test
+    public void testInsert() throws Exception {
+        int n = relationalService.insert("insert into user(id, name, age, className) VALUE(2, 'huang', 18, 'A123')");
+        System.out.println(n);
+    }
+
+    @Test
+    public void testDDL() throws Exception {
+        String createSql = "CREATE TABLE book (\n" +
+                "  book_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '图书编号',\n" +
+                "  book_name VARCHAR(50) NOT NULL COMMENT '图书名',\n" +
+                "  author VARCHAR(30) NOT NULL COMMENT '作者',\n" +
+                "  publish VARCHAR(50) NOT NULL COMMENT '出版社',\n" +
+                "  introduction TEXT COMMENT '简介',\n" +
+                "  book_date TIMESTAMP NOT NULL COMMENT '上传时间',\n" +
+                "  book_start INT DEFAULT 0 COMMENT '评价星级' ,\n" +
+                "  book_img TEXT NOT NULL COMMENT '图书图片'\n" +
+                ") AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8;";
+        int n = relationalService.ddl(createSql);
+        System.out.println(n);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(System.getProperty("user.dir"));
     }
 
 }

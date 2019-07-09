@@ -28,12 +28,15 @@ public class HandleResultSetsPlugin implements Interceptor {
         ResultSetMetaData resultSetMetaData = rs.getMetaData();
         int count = resultSetMetaData.getColumnCount();
         ResultData resultData = new ResultData();
+        // 获取字段名
         List<String> columnNames = new ArrayList<>(count);
         for (int i = 1; i <= count; i++) {
-            columnNames.add(resultSetMetaData.getColumnName(i));
+            columnNames.add(resultSetMetaData.getColumnLabel(i));
         }
         resultData.setColumnNames(columnNames);
         result.add(resultData);
+
+        // 获取数据值
         while (rs.next()) {
             ResultData values = new ResultData();
             List<Object> valueList = new ArrayList<>(count);

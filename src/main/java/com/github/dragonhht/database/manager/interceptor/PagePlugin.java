@@ -1,5 +1,6 @@
 package com.github.dragonhht.database.manager.interceptor;
 
+import com.github.dragonhht.database.manager.common.RelationalPlatform;
 import com.github.dragonhht.database.manager.dto.Page;
 import com.github.dragonhht.database.manager.utils.ReflectionUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -128,11 +129,11 @@ public class PagePlugin implements Interceptor {
      */
     private String getPageSql(Page<?> page, String sql) {
         StringBuffer sb = new StringBuffer(sql);
-        String platform = page.getSqlStatement().getPlatform();
-        if ("MySQL".equalsIgnoreCase(platform)) {
+        RelationalPlatform platform = page.getSqlStatement().getPlatform();
+        if (platform == RelationalPlatform.MYSQL) {
             return this.getMysqlPageSql(page, sb);
         }
-        if ("Oracle".equalsIgnoreCase(platform)) {
+        if (platform == RelationalPlatform.ORACLE) {
             return this.getOraclePageSql(page, sb);
         }
         return sb.toString();

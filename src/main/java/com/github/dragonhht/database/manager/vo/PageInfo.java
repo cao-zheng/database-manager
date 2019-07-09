@@ -1,5 +1,7 @@
-package com.github.dragonhht.database.manager.dto;
+package com.github.dragonhht.database.manager.vo;
 
+import com.github.dragonhht.database.manager.dto.Page;
+import com.github.dragonhht.database.manager.dto.ResultData;
 import lombok.*;
 
 import java.io.Serializable;
