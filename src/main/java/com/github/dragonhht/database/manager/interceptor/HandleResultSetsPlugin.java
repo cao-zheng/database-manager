@@ -1,6 +1,6 @@
 package com.github.dragonhht.database.manager.interceptor;
 
-import com.github.dragonhht.database.manager.model.ResultData;
+import com.github.dragonhht.database.manager.dto.ResultData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.*;
@@ -11,14 +11,14 @@ import java.sql.Statement;
 import java.util.*;
 
 /**
- * .
+ * 通过Mybatis拦截器装配结果.
  *
  * @author: huang
  * @Date: 2019-7-8
  */
 @Slf4j
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
-public class handleResultSetsPlugin implements Interceptor {
+public class HandleResultSetsPlugin implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable{
         List<ResultData> result = new LinkedList<>();
@@ -43,9 +43,6 @@ public class handleResultSetsPlugin implements Interceptor {
             values.setValues(valueList);
             result.add(values);
         }
-
-        //Object result = invocation.proceed();
-
         return result;
     }
 
@@ -56,6 +53,5 @@ public class handleResultSetsPlugin implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

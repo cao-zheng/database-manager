@@ -1,12 +1,12 @@
 package com.github.dragonhht.database.manager.mapper;
 
-import com.github.dragonhht.database.manager.model.ResultData;
-import com.github.dragonhht.database.manager.model.SqlStatement;
+import com.github.dragonhht.database.manager.dto.Page;
+import com.github.dragonhht.database.manager.dto.ResultData;
+import com.github.dragonhht.database.manager.dto.SqlStatement;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 关系型数据库基础操作.
@@ -17,7 +17,7 @@ import java.util.Map;
 @Repository
 public interface RelationalBaseMapper {
 
-    @Select("${sql}")
-    List<ResultData> selectList(SqlStatement statement);
+    @Select("${sqlStatement.sql}")
+    List<ResultData> selectList(Page page);
 
 }

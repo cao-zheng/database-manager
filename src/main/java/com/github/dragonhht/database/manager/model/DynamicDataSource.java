@@ -29,7 +29,6 @@ public class DynamicDataSource extends HikariDataSource {
             return null;
         } else {
             Connection connection = dataSource.getConnection();
-            System.out.println(connection.getMetaData());
             return connection;
         }
     }

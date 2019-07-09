@@ -1,8 +1,10 @@
 package com.github.dragonhht.database.manager.config;
 
-import com.github.dragonhht.database.manager.interceptor.handleResultSetsPlugin;
+import com.github.dragonhht.database.manager.interceptor.HandleResultSetsPlugin;
+import com.github.dragonhht.database.manager.interceptor.PagePlugin;
 import com.github.dragonhht.database.manager.model.DynamicDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,7 +45,7 @@ public class RelationalDatabaseConfig {
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setPlugins(new handleResultSetsPlugin[]{new handleResultSetsPlugin()});
+        factoryBean.setPlugins(new Interceptor[]{new HandleResultSetsPlugin(), new PagePlugin()});
         try {
             return factoryBean.getObject();
         } catch (Exception e) {

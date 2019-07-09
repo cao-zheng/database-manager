@@ -1,7 +1,8 @@
-package com.github.dragonhht.database.manager.model;
+package com.github.dragonhht.database.manager.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ResultData {
+public class ResultData implements Serializable {
+    private static final long serialVersionUID = -438604185356336868L;
+
     /** 字段名. */
     private List<String> columnNames;
     /** 结果. */

@@ -1,8 +1,6 @@
 package com.github.dragonhht.database.manager.service;
 
-import com.github.dragonhht.database.manager.model.ResultData;
-
-import java.util.List;
+import com.github.dragonhht.database.manager.dto.PageInfo;
 
 /**
  * .
@@ -17,6 +15,6 @@ public interface RelationalService {
      * @param sql
      * @return
      */
-    List<ResultData> select(String sql);
+    PageInfo select(String sql);
 
 }

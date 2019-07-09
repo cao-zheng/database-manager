@@ -1,12 +1,12 @@
 package com.github.dragonhht.database.manager;
 
+import com.github.dragonhht.database.manager.dto.PageInfo;
 import com.github.dragonhht.database.manager.mapper.RelationalBaseMapper;
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
-import com.github.dragonhht.database.manager.model.ResultData;
-import com.github.dragonhht.database.manager.model.SqlStatement;
+import com.github.dragonhht.database.manager.dto.ResultData;
+import com.github.dragonhht.database.manager.dto.SqlStatement;
 import com.github.dragonhht.database.manager.service.RelationalService;
 import com.github.dragonhht.database.manager.utils.DataSourceUtil;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,25 +40,9 @@ public class DatabaseManagerApplicationTests {
         data.setDriverClassName("com.mysql.jdbc.Driver");
         DataSourceUtil.INSTANCE.addDataSource("now", data);
         DataSourceUtil.setNowDataSource("now");
-        SqlStatement sqlStatement = new SqlStatement("select * from db");
-//        SqlSession session = sqlSessionFactory.openSession();
-//        List list = session.selectList("com.github.dragonhht.database.manager.mapper.BaseMapper.selectList", sqlStatement);
         SqlStatement sqlStatement1 = new SqlStatement("select * from db");
-        List<ResultData> list = relationalService.select("select * from db");
-
-        list.forEach(item -> {
-            if (item.getColumnNames() != null && item.getColumnNames().size() > 0) {
-                for (String key : item.getColumnNames()) {
-                    System.out.printf("%-33s", key);
-                }
-            }
-            if (item.getValues() != null && item.getValues().size() > 0) {
-                for (Object value : item.getValues()) {
-                    System.out.printf("%-33s", value);
-                }
-            }
-            System.out.println();
-        });
+        PageInfo info = relationalService.select("select * from db");
+        System.out.println(info);
     }
 
 }
