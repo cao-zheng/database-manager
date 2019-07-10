@@ -1,5 +1,6 @@
 package com.github.dragonhht.database.manager;
 
+import com.github.dragonhht.database.manager.utils.helper.ConfigHelper;
 import com.github.dragonhht.database.manager.vo.PageInfo;
 import com.github.dragonhht.database.manager.dto.ResultData;
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -82,8 +85,8 @@ public class DatabaseManagerApplicationTests {
     }
 
     @Test
-    public void test() {
-        System.out.println(System.getProperty("user.dir"));
+    public void test() throws IOException {
+        System.out.println(new File(ConfigHelper.getConnectionInfoDir()).getCanonicalPath());
     }
 
 }

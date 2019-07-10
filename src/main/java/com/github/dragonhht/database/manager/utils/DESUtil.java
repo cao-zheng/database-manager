@@ -1,5 +1,6 @@
 package com.github.dragonhht.database.manager.utils;
 
+import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +8,7 @@ import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -101,17 +103,14 @@ public final class DESUtil {
         return key.getEncoded();
     }
 
-    public static void main(String[] args) {
-        DESUtil.getInstance();
-    }
-
     /**
      * 加密.
      * @param bytes
      * @return
      */
-    public byte[] encode(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
-        return encodeCipher.doFinal(bytes);
+    public String encode(byte[] bytes) throws Exception {
+        byte[] code =  encodeCipher.doFinal(bytes);
+        return Hex.toHexString(code);
     }
 
     /**
@@ -119,8 +118,7 @@ public final class DESUtil {
      * @param bytes
      * @return
      */
-    public byte[] decode(byte[] bytes) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
-        return decodeCipher.doFinal(bytes);
+    public byte[] decode(byte[] bytes) throws Exception {
+        return decodeCipher.doFinal(Hex.decode(bytes));
     }
-
 }

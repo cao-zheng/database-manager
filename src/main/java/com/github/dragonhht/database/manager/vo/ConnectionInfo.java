@@ -23,6 +23,8 @@ public class ConnectionInfo implements Serializable {
     private RelationalPlatform platform;
     /** 连接名. */
     private String name;
+    /** 原连接名. */
+    private String oldName;
     /** 连接到的主机. */
     private String host;
     /** 端口. */
