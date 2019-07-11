@@ -1,18 +1,19 @@
 <!-- 主界面布局 -->
 <template>
     <div class="layout">
-        <Header :style="{background: '#fff', 'border-bottom': '1px solid #DEDEDE', height: '7vh'}">
+        <Header :style="{background: '#fff', 'border-bottom': '1px solid #DEDEDE', height: '72px'}">
           <HeaderMenu></HeaderMenu>
         </Header>
-        <Layout :style="{height: '89vh'}">
-            <Sider collapsible :collapsed-width="20"  v-model="isCollapsed" :style="{background: '#fff', 'border-right': '1px solid #DEDEDE'}">
-                左侧菜单
+        <Layout :style="{height: 'calc(100vh - 72px)'}">
+            <Sider collapsible :collapsed-width="20"  v-model="isCollapsed" 
+              :style="{background: '#fff', 'border-right': '1px solid #DEDEDE'}">
+                <TreeList :isCollapsed="isCollapsed" @transferCollapsed="selectListIcon"></TreeList>
             </Sider>
-            <Layout :style="{height: '93vh'}">
+            <Layout :style="{height: 'calc(100vh - 72px)'}">
                 <Content>
                     主题内容
                 </Content>
-                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '3vh'}">
+                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px'}">
                   状态栏
                 </Footer>
             </Layout>
@@ -20,7 +21,8 @@
     </div>
 </template>
 <script>
-import HeaderMenu from './menu/HeaderMenu.vue'
+import HeaderMenu from './menu/HeaderMenu'
+import TreeList from './sider/TreeList'
 
 export default {
   name: 'Main',
@@ -37,8 +39,14 @@ export default {
           ]
       }
   },
+  methods: {
+    selectListIcon: function(result) {
+      this.isCollapsed = result
+    }
+  },
   components: {
-    HeaderMenu
+    HeaderMenu,
+    TreeList
   }
 }
 </script>
