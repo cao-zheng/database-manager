@@ -28,7 +28,7 @@
             <i class="iconfont icon-0303 icon"></i>
         </div>
 
-        <new-mysql-dialog :showMySQLDialog="showMySQLDialog"></new-mysql-dialog>
+        <new-mysql-dialog :showMySQLDialog="showMySQLDialog" @transferDialogShow="setShowMySQLDialog"></new-mysql-dialog>
     </div>
 </template>
 
@@ -45,6 +45,10 @@ export default {
     methods: {
         newMySQLConnection: function() {
             this.showMySQLDialog = true
+        },
+
+        setShowMySQLDialog: function(result) {
+            this.showMySQLDialog = result
         }
     },
     components: {

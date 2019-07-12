@@ -20,9 +20,9 @@
                 </DropdownItem>
                 <DropdownItem>打开连接</DropdownItem>
                 <DropdownItem>关闭连接</DropdownItem>
-                <DropdownItem divided='true'>导出连接</DropdownItem>
+                <DropdownItem divided>导出连接</DropdownItem>
                 <DropdownItem>导入连接</DropdownItem>
-                <DropdownItem divided='true'>关闭</DropdownItem>
+                <DropdownItem divided>关闭</DropdownItem>
                 <DropdownItem>退出</DropdownItem>
             </DropdownMenu>
         </Dropdown>
