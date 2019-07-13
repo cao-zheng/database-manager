@@ -1,9 +1,9 @@
-<!-- 新建MySQL连接对话框 -->
+<!-- 新建MariaDB连接对话框 -->
 <template>
-    <Modal v-model="showMySQLDialog" width="460"
+    <Modal v-model="showMariaDBDialog" width="460"
         :cancel="cancel" :closable="false" 
         :mask-closable="false"
-        title="MySQL-新建连接">
+        title="MariaDB-新建连接">
         <div>
             <Form :model="connectionInfo" label-position="left" :label-width="100">
                 <FormItem label="连接名:">
@@ -38,7 +38,7 @@
 import transferShowData from '../../common/js/newDialog'
 
 export default {
-    name: 'NewMySQLDialog',
+    name: 'NewMariaDBDialog',
     data() {
         return {
             connectionInfo: {
@@ -54,11 +54,11 @@ export default {
         }
     },
     props: [
-        'showMySQLDialog'
+        'showMariaDBDialog'
     ],
     methods: {
         cancel: function() {
-            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.mysql, false))
+            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.mariadb, false))
         },
 
         save: function() {

@@ -6,14 +6,22 @@
                 <Icon class="icon" type="ios-add-circle-outline" size="45" />
                 <Icon type="ios-arrow-down" />
                 <DropdownMenu slot="list">
-                    <DropdownItem >
-                        <a @click="newMySQLConnection">MySQL</a>
-                    </DropdownItem>
-                    <DropdownItem>PostgreSQL</DropdownItem>
-                    <DropdownItem>Oracle</DropdownItem>
-                    <DropdownItem>SQLite</DropdownItem>
-                    <DropdownItem>SQL Server</DropdownItem>
-                    <DropdownItem>MariaDB</DropdownItem>
+                    <a @click="newMySQLConnection">
+                        <DropdownItem >MySQL</DropdownItem>
+                    </a>
+                    <a @click="NewPostgreSQLDialog">
+                        <DropdownItem>PostgreSQL</DropdownItem>
+                    </a>
+                    <a @click="NewOracleDialog">
+                        <DropdownItem>Oracle</DropdownItem>
+                    </a>
+                    <!-- <DropdownItem>SQLite</DropdownItem> -->
+                    <a @click="NewSQLServerDialog">
+                        <DropdownItem>SQL Server</DropdownItem>
+                    </a>
+                    <a @click="NewMariaDBDialog">
+                        <DropdownItem>MariaDB</DropdownItem>
+                    </a>
                 </DropdownMenu>
             </Dropdown>
         </div>
@@ -28,31 +36,76 @@
             <i class="iconfont icon-0303 icon"></i>
         </div>
 
-        <new-mysql-dialog :showMySQLDialog="showMySQLDialog" @transferDialogShow="setShowMySQLDialog"></new-mysql-dialog>
+        <new-mysql-dialog :showMySQLDialog="showMySQLDialog" @transferDialogShow="setShowNewDialog"></new-mysql-dialog>
+        <new-postgresql-dialog :showPostgreSQLDialog="showPostgreSQLDialog" @transferDialogShow="setShowNewDialog"></new-postgresql-dialog>
+        <new-oracle-dialog :showOracleDialog="showOracleDialog" @transferDialogShow="setShowNewDialog"></new-oracle-dialog>
+        <new-slqserver-dialog :showSQLServerDialog="showSQLServerDialog" @transferDialogShow="setShowNewDialog"></new-slqserver-dialog>
+        <new-mariadb-dialog :showMariaDBDialog="showMariaDBDialog" @transferDialogShow="setShowNewDialog"></new-mariadb-dialog>
     </div>
 </template>
 
 <script>
 import NewMySQLDialog from '../dialog/NewMySQLDialog'
+import NewPostgreSQLDialog from '../dialog/NewPostgreSQLDialog'
+import NewOracleDialog from '../dialog/NewOracleDialog'
+import NewSQLServerDialog from '../dialog/NewSQLServerDialog'
+import NewMariaDBDialog from '../dialog/NewMariaDBDialog'
 
 export default {
     name: 'ShortcutMenu',
     data() {
         return {
-            showMySQLDialog: false
+            showMySQLDialog: false,
+            showPostgreSQLDialog: false,
+            showOracleDialog: false,
+            showSQLServerDialog: false,
+            showMariaDBDialog: false
         }
     },
     methods: {
         newMySQLConnection: function() {
             this.showMySQLDialog = true
         },
-
-        setShowMySQLDialog: function(result) {
-            this.showMySQLDialog = result
+        NewPostgreSQLDialog: function() {
+            this.showPostgreSQLDialog = true
+        },
+        NewOracleDialog: function() {
+            this.showOracleDialog = true
+        },
+        NewSQLServerDialog: function() {
+            this.showSQLServerDialog = true
+        },
+        NewMariaDBDialog: function() {
+            this.showMariaDBDialog = true
+        },
+        setShowNewDialog: function(result) {
+            switch(result.platform) {
+                case this.params.SqlPlatform.mysql:
+                    this.showMySQLDialog = result.isShow
+                    break
+                case this.params.SqlPlatform.postgresql:
+                    this.showPostgreSQLDialog = result.isShow
+                    break
+                case this.params.SqlPlatform.oracle:
+                    this.showOracleDialog = result.isShow
+                    break
+                case this.params.SqlPlatform.sqlserver:
+                    this.showSQLServerDialog = result.isShow
+                    break
+                case this.params.SqlPlatform.mariadb:
+                    this.showMariaDBDialog = result.isShow
+                    break
+                default:
+                    break
+            }
         }
     },
     components: {
-        'new-mysql-dialog': NewMySQLDialog
+        'new-mysql-dialog': NewMySQLDialog,
+        'new-postgresql-dialog': NewPostgreSQLDialog,
+        'new-oracle-dialog': NewOracleDialog,
+        'new-slqserver-dialog': NewSQLServerDialog,
+        'new-mariadb-dialog': NewMariaDBDialog
     }
 }
 </script>

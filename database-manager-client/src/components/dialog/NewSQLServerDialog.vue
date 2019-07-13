@@ -1,9 +1,9 @@
-<!-- 新建MySQL连接对话框 -->
+<!-- 新建SQL Server连接对话框 -->
 <template>
-    <Modal v-model="showMySQLDialog" width="460"
+    <Modal v-model="showSQLServerDialog" width="460"
         :cancel="cancel" :closable="false" 
         :mask-closable="false"
-        title="MySQL-新建连接">
+        title="SQL Server-新建连接">
         <div>
             <Form :model="connectionInfo" label-position="left" :label-width="100">
                 <FormItem label="连接名:">
@@ -11,9 +11,6 @@
                 </FormItem>
                 <FormItem label="主机名或IP:">
                     <Input type="text" v-model="connectionInfo.host" placeholder="主机名或IP" style="width: 300px" />
-                </FormItem>
-                <FormItem label="端口:">
-                    <Input type="text" v-model="connectionInfo.port" placeholder="端口" style="width: 300px" />
                 </FormItem>
                 <FormItem label="用户名:">
                     <Input type="text" v-model="connectionInfo.userName" placeholder="用户名" style="width: 300px" />
@@ -38,7 +35,7 @@
 import transferShowData from '../../common/js/newDialog'
 
 export default {
-    name: 'NewMySQLDialog',
+    name: 'NewSQLServerDialog',
     data() {
         return {
             connectionInfo: {
@@ -47,18 +44,18 @@ export default {
                 oldName: '',
                 host: '',
                 port: 3306,
-                userName: 'root',
+                userName: '',
                 password: '',
                 isSavePwd: false
             }
         }
     },
     props: [
-        'showMySQLDialog'
+        'showSQLServerDialog'
     ],
     methods: {
         cancel: function() {
-            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.mysql, false))
+            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.sqlserver, false))
         },
 
         save: function() {

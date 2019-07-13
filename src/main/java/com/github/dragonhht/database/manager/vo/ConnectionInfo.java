@@ -35,4 +35,8 @@ public class ConnectionInfo implements Serializable {
     private String password;
     /** 是否保存密码. */
     private boolean isSavePwd;
+    /** 初始数据库. */
+    private String db;
+    /** 服务名. */
+    private String serviceName;
 }

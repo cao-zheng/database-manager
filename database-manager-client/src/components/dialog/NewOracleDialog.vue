@@ -1,9 +1,9 @@
-<!-- 新建MySQL连接对话框 -->
+<!-- 新建Oracle连接对话框 -->
 <template>
-    <Modal v-model="showMySQLDialog" width="460"
-        :cancel="cancel" :closable="false" 
+    <Modal v-model="showOracleDialog" width="460"
+        :cancel="cancel" :closable="false"
         :mask-closable="false"
-        title="MySQL-新建连接">
+        title="Oracle-新建连接">
         <div>
             <Form :model="connectionInfo" label-position="left" :label-width="100">
                 <FormItem label="连接名:">
@@ -14,6 +14,9 @@
                 </FormItem>
                 <FormItem label="端口:">
                     <Input type="text" v-model="connectionInfo.port" placeholder="端口" style="width: 300px" />
+                </FormItem>
+                <FormItem label="服务名:">
+                    <Input type="text" v-model="connectionInfo.serviceName" placeholder="服务名" style="width: 300px" />
                 </FormItem>
                 <FormItem label="用户名:">
                     <Input type="text" v-model="connectionInfo.userName" placeholder="用户名" style="width: 300px" />
@@ -38,7 +41,7 @@
 import transferShowData from '../../common/js/newDialog'
 
 export default {
-    name: 'NewMySQLDialog',
+    name: 'NewOracleDialog',
     data() {
         return {
             connectionInfo: {
@@ -46,19 +49,20 @@ export default {
                 name: '',
                 oldName: '',
                 host: '',
-                port: 3306,
-                userName: 'root',
+                port: 1521,
+                userName: '',
                 password: '',
-                isSavePwd: false
+                isSavePwd: false,
+                serviceName: 'ORCL'
             }
         }
     },
     props: [
-        'showMySQLDialog'
+        'showOracleDialog'
     ],
     methods: {
         cancel: function() {
-            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.mysql, false))
+            this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.oracle, false))
         },
 
         save: function() {
