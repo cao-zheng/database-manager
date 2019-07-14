@@ -63,6 +63,14 @@ export default {
 
         save: function() {
             console.log('保存')
+            // this.$axios({
+            //     method: 'get',
+            //     url: 'http://localhost:8888/database/connection/connections'
+            // }).then(res => {
+            //     console.log(res)
+            // }).catch(err => {
+            //     console.log(err)
+            // })
         },
         testLink: function() {
             console.log('测试连接')

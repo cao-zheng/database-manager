@@ -78,7 +78,6 @@ export default {
     },
     methods: {
         selectListIcon: function() {
-            this.isCollapsed = false
             this.$emit('transferCollapsed', false)
         }
     }

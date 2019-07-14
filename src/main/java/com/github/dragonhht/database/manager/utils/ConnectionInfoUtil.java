@@ -63,6 +63,28 @@ public final class ConnectionInfoUtil {
     }
 
     /**
+     * 删除连接信息.
+     * @return
+     */
+    public static boolean delConnectionInfo(String name) {
+        try {
+            ContentInfo savedInfo = getInfo(name);
+            if (savedInfo.isSaved()) {
+                byte[] contentBytes = FileUtil.INSTANCE.readFile(CONNECTION_INFO_PATH);
+                String content = new String(contentBytes, "UTF-8");
+                String beforeStr = content.substring(0, savedInfo.getStart());
+                String afterStr = content.substring(savedInfo.getEnd());
+                String msg = beforeStr + afterStr;
+                FileUtil.INSTANCE.writeFile(CONNECTION_INFO_PATH, msg.getBytes(), StandardOpenOption.WRITE);
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("保存连接信息失败", e);
+        }
+        return false;
+    }
+
+    /**
      * 通过连接名获取连接信息.
      * @param tag
      * @return
