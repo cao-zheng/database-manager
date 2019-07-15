@@ -5,7 +5,6 @@ import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -29,6 +28,17 @@ public class ConnectionController {
     }
 
     /**
+     * 获取单个连接信息.
+     * @param name 连接名
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/connection")
+    public ConnectionInfo getConnectionInfo(String name) throws Exception {
+        return ConnectionInfoUtil.getConnectionByTag(name);
+    }
+
+    /**
      * 保存新连接.
      * @param info
      * @return
@@ -44,9 +54,8 @@ public class ConnectionController {
      * @return
      * @throws UnsupportedEncodingException
      */
-    @DeleteMapping("/connection/{name}")
-    public boolean delConnectionInfo(@PathVariable("name") String name) throws UnsupportedEncodingException {
-        name = URLDecoder.decode(name, "UTF-8");
+    @DeleteMapping("/connection")
+    public boolean delConnectionInfo(String name) throws UnsupportedEncodingException {
         return ConnectionInfoUtil.delConnectionInfo(name);
     }
 

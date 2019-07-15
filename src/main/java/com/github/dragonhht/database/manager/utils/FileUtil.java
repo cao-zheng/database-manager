@@ -28,6 +28,10 @@ public enum FileUtil {
      * @return
      */
     public byte[] readFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            createFile(file);
+        }
         return Files.readAllBytes(Paths.get(filePath));
     }
 

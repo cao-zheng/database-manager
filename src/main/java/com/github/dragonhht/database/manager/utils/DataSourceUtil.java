@@ -1,6 +1,7 @@
 package com.github.dragonhht.database.manager.utils;
 
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
+import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 
@@ -74,6 +75,21 @@ public enum  DataSourceUtil {
                 .password(data.getPassword())
                 .build();
         return dataSource;
+    }
+
+    /**
+     * 通过连接信息直接设置当前使用的数据源
+     * @param info
+     */
+    public void setNowDataSource(ConnectionInfo info) {
+        if (dataSourceMap.get(info.getName()) != null) {
+            setNowDataSource(info.getName());
+            return;
+        }
+        JdbcConnectionData data = ConnectionInfoUtil.converInfoToData(info);
+        DataSource dataSource = initDataSource(data);
+        dataSourceMap.put(info.getName(), dataSource);
+        setNowDataSource(info.getName());
     }
 
     /** 设置当前使用的数据源. */

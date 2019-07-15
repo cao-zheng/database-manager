@@ -1,6 +1,10 @@
 package com.github.dragonhht.database.manager;
 
+import com.github.dragonhht.database.manager.common.RelationalPlatform;
+import com.github.dragonhht.database.manager.service.RelationalDBService;
 import com.github.dragonhht.database.manager.utils.helper.ConfigHelper;
+import com.github.dragonhht.database.manager.vo.ConnectionInfo;
+import com.github.dragonhht.database.manager.vo.DBInfo;
 import com.github.dragonhht.database.manager.vo.PageInfo;
 import com.github.dragonhht.database.manager.dto.ResultData;
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
@@ -23,13 +27,15 @@ public class DatabaseManagerApplicationTests {
 
     @Autowired
     private RelationalService relationalService;
+    @Autowired
+    private RelationalDBService relationalDBService;
 
     @Before
     public void init() {
         JdbcConnectionData data = new JdbcConnectionData();
-        data.setDataBaseName("test");
+        data.setDataBaseName("*");
         data.setHost("my.dragon.com");
-        data.setPlatform("mysql");
+        data.setPlatform(RelationalPlatform.MYSQL);
         data.setPort(3307);
         data.setUserName("root");
         data.setPassword("123");
@@ -46,7 +52,7 @@ public class DatabaseManagerApplicationTests {
 
     @Test
     public void testSelectList() throws Exception {
-        List<ResultData> list = relationalService.selectList("select u.id userId from user u");
+        List<ResultData> list = relationalService.selectList("show databases");
         list.forEach(System.out::println);
     }
 
@@ -85,8 +91,18 @@ public class DatabaseManagerApplicationTests {
     }
 
     @Test
-    public void test() throws IOException {
-        System.out.println(new File(ConfigHelper.getConnectionInfoDir()).getCanonicalPath());
+    public void testDB() throws Exception {
+        ConnectionInfo info = new ConnectionInfo();
+        info.setUserName("root");
+        info.setDb("*");
+        info.setHost("my.dragon.com");
+        info.setPlatform(RelationalPlatform.MYSQL);
+        info.setPort(3307);
+        info.setUserName("root");
+        info.setPassword("123");
+        info.setName("link-1");
+        List<DBInfo> infos = relationalDBService.getAllDB(info);
+        infos.forEach(System.out::println);
     }
 
 }

@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { link } from 'fs';
 export default {
     name: 'TreeList',
     props: ['isCollapsed'],
@@ -16,13 +17,20 @@ export default {
                 {
                     title: '我的连接',
                     expand: true,
+                    index: 0,
                     render: (h, { data }) => {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%'
+                                        width: '100%',
+                                        cursor: 'pointer'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.changeExpand(data)
+                                        }
                                     }
-                                }, 
+                                },
                                 [
                                     h('span', [
                                         h('Icon', {
@@ -38,35 +46,10 @@ export default {
                                 ]
                         )
                     },
-                    children: [
-                        {
-                            title: 'parent 1-1',
-                            expand: true,
-                            children: [
-                                {
-                                    title: 'leaf 1-1-1'
-                                },
-                                {
-                                    title: 'leaf 1-1-2'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'parent 1-2',
-                            expand: true,
-                            children: [
-                                {
-                                    title: 'leaf 1-2-1'
-                                },
-                                {
-                                    title: 'leaf 1-2-1'
-                                }
-                            ]
-                        }
-                    ]
+                    children: this.children
                 }
             ],
-            listTempData: []
+            children: []
         }
     },
     computed: {
@@ -79,18 +62,185 @@ export default {
     methods: {
         selectListIcon: function() {
             this.$emit('transferCollapsed', false)
+        },
+        // 获取树中展示的连接元素
+        getListItem: function(index, info) {
+            let obj = new Object()
+            obj.title = info.name
+            obj.index = index
+            obj.platform = info.platform
+            obj.info = info
+            obj.render = (h, { data }) => {
+                        return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        width: '100%',
+                                        cursor: 'pointer'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.changeExpand(data)
+                                        },
+                                        dblclick: () => {
+                                            this.openConnection(data)
+                                        }
+                                    }
+                                },
+                                [
+                                    h('span', [
+                                        h('i', {
+                                            class: `iconfont ${this.getPlatformIcon(info.platform)}`,
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                        )
+                    }
+            return obj
+        },
+        getListThirdItem: function(name, index, info) {
+            let obj = new Object()
+            obj.title = name
+            obj.index = index
+            obj.platform = info.platform
+            obj.info = info
+            obj.render = (h, { data }) => {
+                        return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        width: '100%',
+                                        cursor: 'pointer',
+                                        'line-height': '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.changeExpand(data)
+                                        },
+                                        dblclick: () => {
+                                            console.log(data)
+                                        }
+                                    }
+                                },
+                                [
+                                    h('span', [
+                                        h('i', {
+                                            class: `iconfont icon-shujuku`,
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                        )
+                    }
+            return obj
+        },
+        // 改变节点的展开状态
+        changeExpand: function(data) {
+            this.$set(data, 'expand', !data.expand)
+        },
+        // 节点获取数据库类型图标
+        getPlatformIcon: function(platform) {
+            switch(platform) {
+                case this.params.SqlPlatform.mysql:
+                    return 'icon-mysql'
+                case this.params.SqlPlatform.postgresql:
+                    return 'icon-postgresql'
+                case this.params.SqlPlatform.oracle:
+                    return 'icon-oracle'
+                case this.params.SqlPlatform.sqlserver:
+                    return 'icon-shujukuleixingtubiao-kuozhan-2'
+                case this.params.SqlPlatform.mariadb:
+                    return 'icon-MariaDB'
+                default:
+                    return ''
+            }
+        },
+        // 打开连接
+        openConnection: function(data) {
+            if(!data.opened) {
+               this.getDBs(data)
+            }
+            const children = data.children || [];
+            children.push({
+                title: 'appended node',
+                expand: true
+            });
+            this.$set(data, 'children', children)
+            this.$set(data, 'expand', true)
+            this.$set(data, 'opened', true)
+        },
+        // 获取连接下的数据库信息
+        getDBs: function(data) {
+            let info = data.info
+            let list = []
+            this.$axios({
+                method: 'post',
+                url: `${this.params.MainHost}/db/dbs`,
+                data: info,
+            }).then(res => {
+                let index = 0
+                res.data.forEach(item => {
+                    let connectionInfo = this.createConnectionInfo(item.name, info)
+                    let node = this.getListThirdItem(item.name, index++, connectionInfo)
+                    list.push(node)
+                })
+                this.$set(data, 'children', list)
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        // 创建数据库节点的连接数据信息
+        createConnectionInfo: function(suffix, info) {
+            let obj = new Object()
+            obj.platform = info.platform
+            obj.name = info.name + '.' + suffix
+            obj.host = info.host
+            obj.port = info.port
+            obj.userName = info.userName
+            obj.password = info.password
+            obj.db = info.db
+            obj.serviceName = info.serviceName
+            return obj
         }
+    },
+    created() {
+        this.$axios({
+            method: 'get',
+            url: `${this.params.MainHost}/connection/connections`
+        }).then(res => {
+            this.children = []
+            let index = 0
+            res.data.forEach(item => {
+                this.children.push(this.getListItem(index++, item))
+            });
+            this.listData[0].children = this.children
+        }).catch(err => {
+            console.log(err)
+        })
     }
 }
 </script>
 
 <style lang="less" scoped>
+@import '../../assets/ali_icon/iconfont.css';
+
 .collapsed-menu {
     display: none;
 }
 .list-small-icon {
     margin-top: 5px;
     cursor: pointer;
+}
+</style>
+
+<style lang="less">
+.ivu-tree ul li {
+    margin: 0 !important;
 }
 </style>
 

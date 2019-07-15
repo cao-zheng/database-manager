@@ -1,13 +1,16 @@
 // 关系型数据库类型
 let SqlPlatform = {
-    mysql: 'MySQL',
-    oracle: 'Oracle',
-    postgresql: 'PostgreSQL',
-    sqlite: 'SQLite',
-    sqlserver: 'SQLServer',
-    mariadb: 'MariaDB'
+    mysql: 'MYSQL',
+    oracle: 'ORACLE',
+    postgresql: 'POSTGRESQL',
+    sqlite: 'SQLITE',
+    sqlserver: 'SQLSERVER',
+    mariadb: 'MARIADB'
 }
 
+let MainHost = 'http://localhost:8888/database'
+
 export default {
-    SqlPlatform
+    SqlPlatform,
+    MainHost
 }

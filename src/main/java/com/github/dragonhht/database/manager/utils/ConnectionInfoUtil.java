@@ -1,6 +1,7 @@
 package com.github.dragonhht.database.manager.utils;
 
 import com.github.dragonhht.database.manager.common.RelationalPlatform;
+import com.github.dragonhht.database.manager.model.JdbcConnectionData;
 import com.github.dragonhht.database.manager.utils.helper.ConfigHelper;
 import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import lombok.*;
@@ -186,6 +187,30 @@ public final class ConnectionInfoUtil {
     }
 
     /**
+     * 将连接信息转成jdbc连接信息
+     * @param info
+     * @return
+     */
+    public static JdbcConnectionData converInfoToData(ConnectionInfo info) {
+        JdbcConnectionData data = new JdbcConnectionData();
+        data.setDataBaseName(info.getDb());
+        data.setHost(info.getHost());
+        data.setPlatform(info.getPlatform());
+        data.setPort(info.getPort());
+        data.setUserName(info.getUserName());
+        data.setPassword(info.getPassword());
+        // TODO 暂时只有MySQL
+        switch (info.getPlatform()) {
+            case MYSQL:
+                data.setDriverClassName("com.mysql.jdbc.Driver");
+                break;
+            default:
+                break;
+        }
+        return data;
+    }
+
+    /**
      * 传递连接信息.
      */
     @Getter
@@ -205,19 +230,16 @@ public final class ConnectionInfoUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 2; i++) {
-            ConnectionInfo info = new ConnectionInfo();
-            info.setHost("my.dragon.com");
-            info.setName("我的连接" + i);
-            info.setOldName("我的连接" + i);
-            info.setPassword("123" + i);
-            info.setPlatform(RelationalPlatform.MYSQL);
-            info.setPort(3307);
-            info.setSavePwd(false);
-            info.setUserName("root" + i);
-            saveConnectionInfo(info);
-        }
+        ConnectionInfo info = new ConnectionInfo();
+        info.setUserName("root");
+        info.setDb("*");
+        info.setHost("my.dragon.com");
+        info.setPlatform(RelationalPlatform.MYSQL);
+        info.setPort(3307);
+        info.setUserName("root");
+        info.setPassword("123");
+        info.setName("link-1");
+        saveConnectionInfo(info);
         List<ConnectionInfo> infos = getAllConnection();
         infos.forEach(System.out::println);
     }

@@ -1,5 +1,6 @@
 package com.github.dragonhht.database.manager.model;
 
+import com.github.dragonhht.database.manager.common.RelationalPlatform;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
@@ -23,12 +24,16 @@ public class JdbcConnectionData {
     private String password;
     private String url;
     private String driverClassName;
-    private String platform;
+    private RelationalPlatform platform;
 
     public String getUrl() {
         if (StringUtils.isEmpty(url)) {
-            if ("mysql".equalsIgnoreCase(platform)) {
-                return "jdbc:mysql://" + host + ":" + port + "/" + dataBaseName + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+            if (platform == RelationalPlatform.MYSQL) {
+                if(!StringUtils.isEmpty(dataBaseName) && !"*".equalsIgnoreCase(dataBaseName)) {
+                    return "jdbc:mysql://" + host + ":" + port + "/" + dataBaseName + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+                } else {
+                    return "jdbc:mysql://" + host + ":" + port + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+                }
             }
         }
         return this.url;
