@@ -11,7 +11,7 @@
             </Sider>
             <Layout :style="{height: 'calc(100vh - 72px)'}">
                 <Content>
-                    主题内容
+                    <Tables></Tables>
                 </Content>
                 <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px'}">
                   状态栏
@@ -23,6 +23,7 @@
 <script>
 import HeaderMenu from './menu/HeaderMenu'
 import TreeList from './sider/TreeList'
+import Tables from './content/Tables'
 
 export default {
   name: 'Main',
@@ -46,7 +47,8 @@ export default {
   },
   components: {
     HeaderMenu,
-    TreeList
+    TreeList,
+    Tables
   }
 }
 </script>

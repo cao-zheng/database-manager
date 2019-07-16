@@ -31,7 +31,6 @@ public class DBController {
      */
     @PostMapping("/dbs")
     public List<DBInfo> getAllDB(@RequestBody ConnectionInfo info) throws Exception {
-        System.out.println(info);
         return relationalDBService.getAllDB(info);
     }
 

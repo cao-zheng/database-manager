@@ -39,7 +39,6 @@ public final class DESUtil {
 
     private DESUtil() {
         String path = System.getProperty("user.dir") + SECRET_KEY_PATH;
-        System.out.println(path);
         try {
             byte[] bytes = FileUtil.INSTANCE.readFile(path);
             if (bytes != null && bytes.length > 0) {
