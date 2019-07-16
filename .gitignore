@@ -32,7 +32,6 @@ build/
 .mvn/
 mvnw
 mvnw.cmd
-conf/
 data/
 
 

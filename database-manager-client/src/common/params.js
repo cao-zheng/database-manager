@@ -8,9 +8,19 @@ let SqlPlatform = {
     mariadb: 'MARIADB'
 }
 
+let ShowTarget = {
+    // 视图
+    view: 'view',
+    // 表
+    table: 'table',
+    // 查询
+    select: 'select'
+}
+
 let MainHost = 'http://localhost:8888/database'
 
 export default {
     SqlPlatform,
-    MainHost
+    MainHost,
+    ShowTarget
 }

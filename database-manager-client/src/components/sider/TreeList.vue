@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { link } from 'fs';
 export default {
     name: 'TreeList',
     props: ['isCollapsed'],
@@ -120,7 +119,7 @@ export default {
                                             this.changeExpand(data)
                                         },
                                         dblclick: () => {
-                                            console.log(data)
+                                            this.getListForthItems(data)
                                         }
                                     }
                                 },
@@ -138,6 +137,80 @@ export default {
                         )
                     }
             return obj
+        },
+        // 获取第四层级的节点名称
+        getForthItemTitle: function(target) {
+            switch(target) {
+                case this.params.ShowTarget.view:
+                    return '视图'
+                case this.params.ShowTarget.table:
+                    return '表'
+                case this.params.ShowTarget.select:
+                    return '查询'
+            }
+        },
+        // 获取第四层级的节点图标
+        getForthItemIcon: function(target) {
+            switch(target) {
+                case this.params.ShowTarget.view:
+                    return 'icon-shitu'
+                case this.params.ShowTarget.table:
+                    return 'icon-biaoge'
+                case this.params.ShowTarget.select:
+                    return 'icon-0303'
+            }
+        },
+        // 获取第四层级的单个节点
+        getListForthItem: function(info, target) {
+            let obj = new Object()
+            obj.info = info
+            obj.target = target
+            obj.title = this.getForthItemTitle(target)
+            obj.render = (h, { data }) => {
+                        return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        width: '100%',
+                                        cursor: 'pointer',
+                                        'line-height': '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.changeExpand(data)
+                                        },
+                                        dblclick: () => {
+                                            console.log(data)
+                                        }
+                                    }
+                                },
+                                [
+                                    h('span', [
+                                        h('i', {
+                                            class: `iconfont ${this.getForthItemIcon(target)}`,
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                        )
+                    }
+            return obj
+        },
+        // 获取第四层级的所有节点
+        getListForthItems: function(data) {
+            if(!data.opened) {
+                const targets = [this.params.ShowTarget.table, this.params.ShowTarget.view, this.params.ShowTarget.select]
+                let children = []
+                let info = data.info
+                targets.forEach(target => {
+                    children.push(this.getListForthItem(info, target))
+                })
+                this.$set(data, 'children', children)
+                this.$set(data, 'expand', true)
+                this.$set(data, 'opened', true)
+            }
         },
         // 改变节点的展开状态
         changeExpand: function(data) {
@@ -165,12 +238,6 @@ export default {
             if(!data.opened) {
                this.getDBs(data)
             }
-            const children = data.children || [];
-            children.push({
-                title: 'appended node',
-                expand: true
-            });
-            this.$set(data, 'children', children)
             this.$set(data, 'expand', true)
             this.$set(data, 'opened', true)
         },
