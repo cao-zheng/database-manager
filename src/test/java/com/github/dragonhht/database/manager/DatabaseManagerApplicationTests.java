@@ -33,7 +33,7 @@ public class DatabaseManagerApplicationTests {
     @Before
     public void init() {
         JdbcConnectionData data = new JdbcConnectionData();
-        data.setDataBaseName("*");
+        data.setDataBaseName("mysql");
         data.setHost("my.dragon.com");
         data.setPlatform(RelationalPlatform.MYSQL);
         data.setPort(3307);
@@ -41,7 +41,7 @@ public class DatabaseManagerApplicationTests {
         data.setPassword("123");
         data.setDriverClassName("com.mysql.jdbc.Driver");
         DataSourceUtil.INSTANCE.addDataSource("now", data);
-        DataSourceUtil.setNowDataSource("now");
+        DataSourceUtil.setNowDataSource("now", data.getPlatform());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class DatabaseManagerApplicationTests {
 
     @Test
     public void testSelectList() throws Exception {
-        List<ResultData> list = relationalService.selectList("show databases");
+        List<ResultData> list = relationalService.selectList("show table status where comment='view'");
         list.forEach(System.out::println);
     }
 

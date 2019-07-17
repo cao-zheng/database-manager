@@ -7,13 +7,14 @@
         <Layout :style="{height: 'calc(100vh - 72px)'}">
             <Sider collapsible :collapsed-width="20"  v-model="isCollapsed" 
               :style="{background: '#fff', 'border-right': '1px solid #DEDEDE'}">
-                <TreeList :isCollapsed="isCollapsed" @transferCollapsed="selectListIcon"></TreeList>
+                <TreeList :isCollapsed="isCollapsed" @transferCollapsed="selectListIcon" 
+                  @transferContentData="setContentData"></TreeList>
             </Sider>
             <Layout :style="{height: 'calc(100vh - 72px)'}">
                 <Content>
-                    <Tables></Tables>
+                    <MainTabs :contentData="contentData"></MainTabs>
                 </Content>
-                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px'}">
+                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px', position: 'fixed', bottom: '0', width:'100%'}">
                   状态栏
                 </Footer>
             </Layout>
@@ -23,13 +24,14 @@
 <script>
 import HeaderMenu from './menu/HeaderMenu'
 import TreeList from './sider/TreeList'
-import Tables from './content/Tables'
+import MainTabs from './content/MainTabs'
 
 export default {
   name: 'Main',
   data () {
       return {
-          isCollapsed: false
+          isCollapsed: false,
+          contentData: {}
       };
   },
   computed: {
@@ -43,12 +45,16 @@ export default {
   methods: {
     selectListIcon: function(result) {
       this.isCollapsed = result
+    },
+    // 设置主区域展示的数据
+    setContentData: function(data) {
+      this.contentData = data
     }
   },
   components: {
     HeaderMenu,
     TreeList,
-    Tables
+    MainTabs
   }
 }
 </script>

@@ -160,6 +160,48 @@ export default {
                     return 'icon-0303'
             }
         },
+        // 获取展示的数据
+        getShowDataList: function(data, target) {
+            switch(target) {
+                case this.params.ShowTarget.table:
+                    this.getShowTables(data.info)
+                    break
+                case this.params.ShowTarget.view:
+                    this.getShowViews(data.info)
+                    break
+            }
+        },
+        // 获取数据库下的所有表
+        getShowTables: function(info) {
+            this.$axios({
+                method: 'post',
+                url: `${this.params.MainHost}/db/tables`,
+                data: info
+            }).then(res => {
+                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.table))
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        // 获取数据库下的所有视图
+        getShowViews: function(info) {
+            this.$axios({
+                method: 'post',
+                url: `${this.params.MainHost}/db/views`,
+                data: info
+            }).then(res => {
+                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.view))
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        // 构造主区域数据结构
+        getTransferContentData: function(data, target) {
+            let obj = new Object()
+            obj.target = target
+            obj.data = data
+            return obj
+        },
         // 获取第四层级的单个节点
         getListForthItem: function(info, target) {
             let obj = new Object()
@@ -176,10 +218,7 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.changeExpand(data)
-                                        },
-                                        dblclick: () => {
-                                            console.log(data)
+                                            this.getShowDataList(data, target)
                                         }
                                     }
                                 },
@@ -252,7 +291,7 @@ export default {
             }).then(res => {
                 let index = 0
                 res.data.forEach(item => {
-                    let connectionInfo = this.createConnectionInfo(item.name, info)
+                    let connectionInfo = this.createConnectionInfo(item.name, info, true)
                     let node = this.getListThirdItem(item.name, index++, connectionInfo)
                     list.push(node)
                 })
@@ -262,7 +301,7 @@ export default {
             })
         },
         // 创建数据库节点的连接数据信息
-        createConnectionInfo: function(suffix, info) {
+        createConnectionInfo: function(suffix, info, isDB) {
             let obj = new Object()
             obj.platform = info.platform
             obj.name = info.name + '.' + suffix
@@ -270,7 +309,11 @@ export default {
             obj.port = info.port
             obj.userName = info.userName
             obj.password = info.password
-            obj.db = info.db
+            if(isDB) {
+                obj.db = suffix
+            } else {
+                obj.db = info.db
+            }
             obj.serviceName = info.serviceName
             return obj
         }
