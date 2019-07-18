@@ -9,13 +9,19 @@
             :disabled="item.disabled">
             <!-- 表和视图 -->
             <tables v-if="index ==0 && (item.target == params.ShowTarget.table || item.target == params.ShowTarget.view)" 
-                :contentData="item.data" :target="item.target"></tables>
+                :contentData="item.data"
+                :target="item.target"
+                :info="item.info"
+                @transferSelectData="getSelectData"></tables>
+            <table-data v-if="index != 0 && (item.target == 'select-' + params.ShowTarget.table || item.target == 'select-' + params.ShowTarget.view) "
+                :dataInfo="item"></table-data>
         </el-tab-pane>
     </el-tabs>
 </template>
 
 <script>
 import Tables from './Tables'
+import TableData from './TableData'
 
 export default {
     name: 'MainTabs',
@@ -36,9 +42,13 @@ export default {
     },
     methods: {
         // 获取每个标签页对象信息
-        getTabItemInfo: function(info) {
+        getTabItemInfo: function(title, disabled, target, data, info) {
             let obj = new Object()
-            obj.title = info.title
+            obj.title = title
+            obj.disabled = disabled
+            obj.target = target
+            obj.data = data
+            obj.info = info
             return obj
         },
         // 移除标签页
@@ -62,6 +72,13 @@ export default {
         // 将number转为string
         convertNumberToString: function(num) {
             return String(num)
+        },
+        // 获取选择的数据
+        getSelectData: function(data) {
+            let item = this.getTabItemInfo(data.title, false, data.target, {}, data.info)
+            // TODO 目前只添加
+            let len = this.tabs.push(item)
+            this.activeTabName = this.convertNumberToString(len - 1)
         }
     },
     computed: {
@@ -83,13 +100,15 @@ export default {
                 let tab = this.tabs[0]
                 tab.target = newValue.target
                 tab.data = newValue.data
+                tab.info = newValue.info
                 tab.disabled = false
                 this.$set(this.tabs, 0, tab)
             }
         }
     },
     components: {
-        'tables': Tables
+        'tables': Tables,
+        'table-data': TableData
     }
 }
 </script>

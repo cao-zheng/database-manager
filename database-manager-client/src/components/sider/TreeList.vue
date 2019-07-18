@@ -178,7 +178,7 @@ export default {
                 url: `${this.params.MainHost}/db/tables`,
                 data: info
             }).then(res => {
-                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.table))
+                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.table, info))
             }).catch(err => {
                 console.log(err)
             })
@@ -190,16 +190,17 @@ export default {
                 url: `${this.params.MainHost}/db/views`,
                 data: info
             }).then(res => {
-                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.view))
+                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.view, info))
             }).catch(err => {
                 console.log(err)
             })
         },
         // 构造主区域数据结构
-        getTransferContentData: function(data, target) {
+        getTransferContentData: function(data, target, info) {
             let obj = new Object()
             obj.target = target
             obj.data = data
+            obj.info = info
             return obj
         },
         // 获取第四层级的单个节点

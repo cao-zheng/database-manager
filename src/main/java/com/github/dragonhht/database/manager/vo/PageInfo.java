@@ -2,11 +2,15 @@ package com.github.dragonhht.database.manager.vo;
 
 import com.github.dragonhht.database.manager.dto.Page;
 import com.github.dragonhht.database.manager.dto.ResultData;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 封装分页查询的实体(用于返回给控制层).
@@ -29,7 +33,7 @@ public class PageInfo implements Serializable {
     /** 总页数. */
     private int totalPage;
     /** 当前页记录. */
-    private List<ResultData> list;
+    private List<Map<String, Object>> list;
     /** 查询的字段. */
     private List<String> columns;
 
@@ -38,16 +42,32 @@ public class PageInfo implements Serializable {
         this.pageSize = page.getPageSize();
         this.totalCount = page.getTotalCount();
         this.totalPage = page.getTotalPage();
-        if (list != null) {
-            int listSize = list.size();
+        this.list = covertResultDataToMap(list);
+    }
+
+    private List<Map<String, Object>> covertResultDataToMap(List<ResultData> dataList) {
+        List<String> columns = new LinkedList<>();
+        List<Map<String, Object>> results = new LinkedList<>();
+        if (dataList != null) {
+            int listSize = dataList.size();
             if (listSize > 0) {
-                ResultData columnData = list.get(0);
-                this.columns = columnData.getColumnNames();
+                ResultData columnData = dataList.get(0);
+                columns = columnData.getColumnNames();
+                this.columns = columns;
             }
             if (listSize > 1) {
-                list.remove(0);
-                this.list = list;
+                for (int i = 1; i < listSize; i++) {
+                    List<Object> datas = dataList.get(i).getValues();
+                    if (datas != null) {
+                        Map<String, Object> map = new HashMap<>();
+                        for (int j = 0; j < columns.size(); j++) {
+                            map.put(columns.get(j), datas.get(j));
+                        }
+                        results.add(map);
+                    }
+                }
             }
         }
+        return results;
     }
 }

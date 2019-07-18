@@ -48,7 +48,6 @@ public class PagePlugin implements Interceptor {
             String sql = boundSql.getSql();
             // 设置总记录数
             this.setTotalRecord(page, mappedStatement, connection);
-            System.out.println(page);
             // 获取分页SQL语句
             String pageSql = this.getPageSql(page, sql);
             ReflectionUtil.setFieldValue(boundSql, "sql", pageSql);
@@ -153,7 +152,6 @@ public class PagePlugin implements Interceptor {
                 .append(start + page.getPageSize());
         sql.insert(0, "select * from (").append(") where r >= ")
                 .append(start);
-        System.out.println(sql.toString());
         return sql.toString();
     }
 

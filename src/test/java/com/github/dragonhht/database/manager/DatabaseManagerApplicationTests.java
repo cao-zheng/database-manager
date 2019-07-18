@@ -1,15 +1,16 @@
 package com.github.dragonhht.database.manager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.dragonhht.database.manager.common.RelationalPlatform;
+import com.github.dragonhht.database.manager.dto.ResultData;
+import com.github.dragonhht.database.manager.model.JdbcConnectionData;
 import com.github.dragonhht.database.manager.service.RelationalDBService;
-import com.github.dragonhht.database.manager.utils.helper.ConfigHelper;
+import com.github.dragonhht.database.manager.service.RelationalService;
+import com.github.dragonhht.database.manager.utils.DataSourceUtil;
+import com.github.dragonhht.database.manager.utils.JsonUtils;
 import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.github.dragonhht.database.manager.vo.DBInfo;
 import com.github.dragonhht.database.manager.vo.PageInfo;
-import com.github.dragonhht.database.manager.dto.ResultData;
-import com.github.dragonhht.database.manager.model.JdbcConnectionData;
-import com.github.dragonhht.database.manager.service.RelationalService;
-import com.github.dragonhht.database.manager.utils.DataSourceUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,13 +34,13 @@ public class DatabaseManagerApplicationTests {
     @Before
     public void init() {
         JdbcConnectionData data = new JdbcConnectionData();
-        data.setDataBaseName("mysql");
+        data.setDataBaseName("test");
         data.setHost("my.dragon.com");
         data.setPlatform(RelationalPlatform.MYSQL);
         data.setPort(3307);
         data.setUserName("root");
         data.setPassword("123");
-        data.setDriverClassName("com.mysql.jdbc.Driver");
+        data.setDriverClassName("com.mysql.cj.jdbc.Driver");
         DataSourceUtil.INSTANCE.addDataSource("now", data);
         DataSourceUtil.setNowDataSource("now", data.getPlatform());
     }
@@ -47,7 +48,7 @@ public class DatabaseManagerApplicationTests {
     @Test
     public void testPageSelect() throws Exception {
         PageInfo info = relationalService.select("select * from user");
-        System.out.println(info);
+        System.out.println(JsonUtils.INSTANCE.writeValueAsString(info));
     }
 
     @Test
@@ -103,6 +104,15 @@ public class DatabaseManagerApplicationTests {
         info.setName("link-1");
         List<DBInfo> infos = relationalDBService.getAllDB(info);
         infos.forEach(System.out::println);
+    }
+
+    @Test
+    public void testJson() throws JsonProcessingException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("hello", "world");
+        map.put("name", null);
+        System.out.println(map);
+        System.out.println(JsonUtils.INSTANCE.writeValueAsString(map));
     }
 
 }

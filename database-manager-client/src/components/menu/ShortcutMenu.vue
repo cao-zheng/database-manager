@@ -26,7 +26,7 @@
             </Dropdown>
         </div>
         <Divider class="menu-divider" type="vertical" />
-        <div class="menu-icon">
+        <div class="menu-icon" :style="{}">
             <i class="iconfont icon-biaoge icon"></i>
         </div>
         <div class="menu-icon">

@@ -2,10 +2,8 @@ package com.github.dragonhht.database.manager.service.impl;
 
 import com.github.dragonhht.database.manager.common.RelationalPlatform;
 import com.github.dragonhht.database.manager.dto.ResultData;
-import com.github.dragonhht.database.manager.model.JdbcConnectionData;
 import com.github.dragonhht.database.manager.service.RelationalDBService;
 import com.github.dragonhht.database.manager.service.RelationalService;
-import com.github.dragonhht.database.manager.utils.ConnectionInfoUtil;
 import com.github.dragonhht.database.manager.utils.DataSourceUtil;
 import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.github.dragonhht.database.manager.vo.DBInfo;
@@ -14,7 +12,6 @@ import com.github.dragonhht.database.manager.vo.ViewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.util.LinkedList;
 import java.util.List;
 

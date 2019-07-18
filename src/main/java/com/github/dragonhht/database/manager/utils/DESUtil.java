@@ -8,7 +8,6 @@ import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
