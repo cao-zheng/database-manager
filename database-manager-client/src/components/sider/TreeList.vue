@@ -9,7 +9,7 @@
 <script>
 export default {
     name: 'TreeList',
-    props: ['isCollapsed'],
+    props: ['isCollapsed', 'newConnectionInfo'],
     data() {
         return {
             listData: [
@@ -93,7 +93,9 @@ export default {
                                                 marginRight: '8px'
                                             }
                                         }),
-                                        h('span', data.title)
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
                                     ])
                                 ]
                         )
@@ -131,7 +133,9 @@ export default {
                                                 marginRight: '8px'
                                             }
                                         }),
-                                        h('span', data.title)
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
                                     ])
                                 ]
                         )
@@ -162,46 +166,10 @@ export default {
         },
         // 获取展示的数据
         getShowDataList: function(data, target) {
-            switch(target) {
-                case this.params.ShowTarget.table:
-                    this.getShowTables(data.info)
-                    break
-                case this.params.ShowTarget.view:
-                    this.getShowViews(data.info)
-                    break
-            }
-        },
-        // 获取数据库下的所有表
-        getShowTables: function(info) {
-            this.$axios({
-                method: 'post',
-                url: `${this.params.MainHost}/db/tables`,
-                data: info
-            }).then(res => {
-                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.table, info))
-            }).catch(err => {
-                console.log(err)
-            })
-        },
-        // 获取数据库下的所有视图
-        getShowViews: function(info) {
-            this.$axios({
-                method: 'post',
-                url: `${this.params.MainHost}/db/views`,
-                data: info
-            }).then(res => {
-                this.$emit('transferContentData', this.getTransferContentData(res.data, this.params.ShowTarget.view, info))
-            }).catch(err => {
-                console.log(err)
-            })
-        },
-        // 构造主区域数据结构
-        getTransferContentData: function(data, target, info) {
             let obj = new Object()
             obj.target = target
-            obj.data = data
-            obj.info = info
-            return obj
+            obj.info = data.info
+            this.$emit('transferContentData', obj)
         },
         // 获取第四层级的单个节点
         getListForthItem: function(info, target) {
@@ -231,7 +199,9 @@ export default {
                                                 marginRight: '8px'
                                             }
                                         }),
-                                        h('span', data.title)
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
                                     ])
                                 ]
                         )
@@ -333,6 +303,19 @@ export default {
         }).catch(err => {
             console.log(err)
         })
+    },
+    watch: {
+        newConnectionInfo: {
+            handler(newValue, oldValue) {
+                // 新增连接信息
+                if(newValue.target === 'new') {
+                    console.log(this.children.length)
+                    this.children.push(this.getListItem(this.children.length, newValue.info))
+                    this.$set(this.listData[0], 'children', this.children)
+                }
+            },
+            deep: true
+        }
     }
 }
 </script>
@@ -352,6 +335,16 @@ export default {
 <style lang="less">
 .ivu-tree ul li {
     margin: 0 !important;
+}
+
+.tree-item {
+    border-radius: 5px;
+    padding: 2px 5px;
+    min-width: 100px;
+
+    &:hover {
+        background: #99CCFF;
+    }
 }
 </style>
 

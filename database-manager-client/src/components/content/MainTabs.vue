@@ -1,20 +1,20 @@
 <!-- 标签页 -->
 <template>
     <el-tabs v-model="activeTabName" type="card" @tab-remove="handleTabsRemove">
-        <el-tab-pane v-for="(item, index) in tabs" 
+        <el-tab-pane v-for="(item, index) in tabs"
             :closable="index != 0"
             :key="index"
             :label="item.title"
             :name="convertNumberToString(index)"
             :disabled="item.disabled">
             <!-- 表和视图 -->
-            <tables v-if="index ==0 && (item.target == params.ShowTarget.table || item.target == params.ShowTarget.view)" 
-                :contentData="item.data"
-                :target="item.target"
-                :info="item.info"
-                @transferSelectData="getSelectData"></tables>
+            <tables v-if="index ==0 && (item.target === params.ShowTarget.table || item.target === params.ShowTarget.view)" 
+                :dataInfo="item"
+                @transferSelectData="getSelectData">
+            </tables>
             <table-data v-if="index != 0 && (item.target == 'select-' + params.ShowTarget.table || item.target == 'select-' + params.ShowTarget.view) "
-                :dataInfo="item"></table-data>
+                :dataInfo="item">
+            </table-data>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -95,16 +95,21 @@ export default {
     },
     watch: {
         // 侦听contentData的变化
-        contentData: function(newValue, oldValue) {
-            if(newValue.target === this.params.ShowTarget.table || newValue.target === this.params.ShowTarget.view) {
-                let tab = this.tabs[0]
-                tab.target = newValue.target
-                tab.data = newValue.data
-                tab.info = newValue.info
-                tab.disabled = false
-                this.$set(this.tabs, 0, tab)
-            }
+        contentData: {
+            handler(newValue, oldValue) {
+                if(newValue.target === this.params.ShowTarget.table || newValue.target === this.params.ShowTarget.view) {
+                    let tab = new Object()
+                    tab.title = this.tabs[0].title
+                    tab.target = newValue.target
+                    tab.info = newValue.info
+                    tab.disabled = false
+                    this.$set(this.tabs, 0, tab)
+                }
+            },
+            deep: true,
+            immediate: true
         }
+        
     },
     components: {
         'tables': Tables,

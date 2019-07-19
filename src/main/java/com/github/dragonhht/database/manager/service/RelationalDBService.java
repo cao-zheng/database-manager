@@ -24,6 +24,13 @@ public interface RelationalDBService {
     List<DBInfo> getAllDB(ConnectionInfo connectionInfo) throws Exception;
 
     /**
+     * 获取当前数据源下的所有数据库
+     * @return
+     * @throws Exception
+     */
+    List<DBInfo> getAllDB() throws Exception;
+
+    /**
      * 获取指定数据库下的表
      * @param info
      * @return

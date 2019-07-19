@@ -30,11 +30,16 @@ public class RelationalDBServiceImpl implements RelationalDBService {
     @Override
     public List<DBInfo> getAllDB(ConnectionInfo connectionInfo) throws Exception {
         DataSourceUtil.INSTANCE.setNowDataSource(connectionInfo);
+        return getAllDB();
+    }
 
+    @Override
+    public List<DBInfo> getAllDB() throws Exception {
+        RelationalPlatform platform = DataSourceUtil.getNowPlatform();
         List<DBInfo> list = new LinkedList<>();
         String sql = "";
         // TODO 还有其它关系型数据库
-        switch (connectionInfo.getPlatform()) {
+        switch (platform) {
             case MYSQL:
                 sql = "show databases";
                 break;
@@ -45,7 +50,7 @@ public class RelationalDBServiceImpl implements RelationalDBService {
         if (datas != null && datas.size() > 1) {
             for (int i = 1; i < datas.size(); i++) {
                 DBInfo info = new DBInfo();
-                info.setPlatform(connectionInfo.getPlatform());
+                info.setPlatform(platform);
                 info.setName(String.valueOf(datas.get(i).getValues().get(0)));
                 list.add(info);
             }

@@ -51,7 +51,6 @@ export default {
             this.tableData = res.data.list
             this.tableColumns = res.data.columns
             this.loading = false
-            console.log(this.tableData)
         }).catch(err => {
             console.log(err)
             this.loading = false

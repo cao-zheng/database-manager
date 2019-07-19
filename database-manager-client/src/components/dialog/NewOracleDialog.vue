@@ -25,7 +25,7 @@
                     <Input type="password" v-model="connectionInfo.password" placeholder="密码" style="width: 300px" />
                 </FormItem>
                 <FormItem label="">
-                    <Checkbox v-model="connectionInfo.isSavePwd">记住密码</Checkbox>
+                    <Checkbox v-model="connectionInfo.savePwd">记住密码</Checkbox>
                 </FormItem>
             </Form>
         </div>
@@ -45,14 +45,14 @@ export default {
     data() {
         return {
             connectionInfo: {
-                platform: '',
+                platform: this.params.SqlPlatform.oracle,
                 name: '',
                 oldName: '',
                 host: '',
                 port: 1521,
                 userName: '',
                 password: '',
-                isSavePwd: false,
+                savePwd: false,
                 serviceName: 'ORCL'
             }
         }
@@ -64,9 +64,26 @@ export default {
         cancel: function() {
             this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.oracle, false))
         },
-
         save: function() {
-            console.log('保存')
+            this.$axios({
+                method: 'post',
+                url: `${this.params.MainHost}/connection/connection`,
+                data: this.connectionInfo
+            }).then(res => {
+                if(res.data) {
+                    this.$Message.success('操作成功');
+                    this.$emit('transferDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.oracle, false))
+                    this.addNewConnectionItem()
+                } else {
+                    this.$Message.error('操作失败');
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        // 创建新的连接信息节点
+        addNewConnectionItem: function() {
+            this.$emit('transferNewConnection', this.connectionInfo)
         },
         testLink: function() {
             console.log('测试连接')

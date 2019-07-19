@@ -90,9 +90,19 @@ public enum  DataSourceUtil {
             setNowDataSource(info.getName(), info.getPlatform());
             return;
         }
+        this.setNewDataSource(info, true);
+    }
+
+    /**
+     * 通过连接信息设置新的当前的数据源
+     * @param info
+     */
+    public void setNewDataSource(ConnectionInfo info, boolean save) {
         JdbcConnectionData data = ConnectionInfoUtil.converInfoToData(info);
         DataSource dataSource = initDataSource(data);
-        dataSourceMap.put(info.getName(), dataSource);
+        if (save) {
+            dataSourceMap.put(info.getName(), dataSource);
+        }
         setNowDataSource(info.getName(), data.getPlatform());
     }
 

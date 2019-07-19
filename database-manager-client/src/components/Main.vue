@@ -2,13 +2,17 @@
 <template>
     <div class="layout">
         <Header :style="{background: '#fff', 'border-bottom': '1px solid #DEDEDE', height: '72px'}">
-          <HeaderMenu></HeaderMenu>
+          <HeaderMenu @transferNewConnection="addNewConnection"></HeaderMenu>
         </Header>
         <Layout :style="{height: 'calc(100vh - 72px)'}">
             <Sider collapsible :collapsed-width="20"  v-model="isCollapsed" 
               :style="{background: '#fff', 'border-right': '1px solid #DEDEDE'}">
-                <TreeList :isCollapsed="isCollapsed" @transferCollapsed="selectListIcon" 
-                  @transferContentData="setContentData"></TreeList>
+                <TreeList
+                  :isCollapsed="isCollapsed"
+                  @transferCollapsed="selectListIcon" 
+                  @transferContentData="setContentData"
+                  :newConnectionInfo="newConnectionInfo">
+                </TreeList>
             </Sider>
             <Layout :style="{height: 'calc(100vh - 72px)'}">
                 <Content>
@@ -31,7 +35,8 @@ export default {
   data () {
       return {
           isCollapsed: false,
-          contentData: {}
+          contentData: {},
+          newConnectionInfo: {}
       };
   },
   computed: {
@@ -49,6 +54,14 @@ export default {
     // 设置主区域展示的数据
     setContentData: function(data) {
       this.contentData = data
+    },
+    // 创建新的连接信息节点
+    addNewConnection: function(data) {
+      let obj = new Object()
+      // 添加新的连接信息
+      obj.target = 'new'
+      obj.info = data
+      this.newConnectionInfo = obj
     }
   },
   components: {
@@ -69,5 +82,12 @@ export default {
     }
     .ivu-layout-header {
       padding: 0 0 !important;
+    }
+
+    span {
+      -webkit-user-select:none;
+      -moz-user-select:none;
+      -ms-user-select:none;
+      user-select:none;
     }
 </style>

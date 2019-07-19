@@ -46,11 +46,31 @@
             </DropdownMenu>
         </Dropdown>
 
-        <new-mysql-dialog :showMySQLDialog="showMySQLDialog" @transferDialogShow="setShowNewDialog"></new-mysql-dialog>
-        <new-postgresql-dialog :showPostgreSQLDialog="showPostgreSQLDialog" @transferDialogShow="setShowNewDialog"></new-postgresql-dialog>
-        <new-oracle-dialog :showOracleDialog="showOracleDialog" @transferDialogShow="setShowNewDialog"></new-oracle-dialog>
-        <new-slqserver-dialog :showSQLServerDialog="showSQLServerDialog" @transferDialogShow="setShowNewDialog"></new-slqserver-dialog>
-        <new-mariadb-dialog :showMariaDBDialog="showMariaDBDialog" @transferDialogShow="setShowNewDialog"></new-mariadb-dialog>
+        <new-mysql-dialog
+            :showMySQLDialog="showMySQLDialog"
+            @transferDialogShow="setShowNewDialog"
+            @transferNewConnection="addNewConnection">
+        </new-mysql-dialog>
+        <new-postgresql-dialog
+            :showPostgreSQLDialog="showPostgreSQLDialog"
+            @transferDialogShow="setShowNewDialog"
+            @transferNewConnection="addNewConnection">
+        </new-postgresql-dialog>
+        <new-oracle-dialog
+            :showOracleDialog="showOracleDialog"
+            @transferDialogShow="setShowNewDialog"
+            @transferNewConnection="addNewConnection">
+        </new-oracle-dialog>
+        <new-slqserver-dialog
+            :showSQLServerDialog="showSQLServerDialog"
+            @transferDialogShow="setShowNewDialog"
+            @transferNewConnection="addNewConnection">
+        </new-slqserver-dialog>
+        <new-mariadb-dialog
+            :showMariaDBDialog="showMariaDBDialog"
+            @transferDialogShow="setShowNewDialog"
+            @transferNewConnection="addNewConnection">
+        </new-mariadb-dialog>
     </div>
 </template>
 
@@ -108,6 +128,10 @@ export default {
                 default:
                     break
             }
+        },
+        // 用于添加新的连接信息节点
+        addNewConnection: function(data) {
+            this.$emit('transferNewConnection', data)
         }
     },
     components: {
