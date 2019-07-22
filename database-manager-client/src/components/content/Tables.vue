@@ -1,6 +1,6 @@
 <!-- 表与视图的列表展示 -->
 <template>
-    <div class="main-content" 
+    <div height="calc(100vh - 137px)"
         v-loading="loading"
         element-loading-text="拼命加载中"
         element-loading-spinner="el-icon-loading"

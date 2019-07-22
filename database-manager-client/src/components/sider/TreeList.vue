@@ -3,6 +3,59 @@
     <div >
         <Tree :data="listData" :class="listTreeClasses"></Tree>
         <Icon v-show="isCollapsed" type="ios-list-box" size="18" class="list-small-icon" @click="selectListIcon" />
+
+        <!-- 二级树右击事件 -->
+        <Dropdown transfer ref="contentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >打开连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >关闭连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >删除连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem divided>新建数据库</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+
+        <!-- 三级树右击事件 -->
+        <Dropdown transfer ref="thirdContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建表</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >创建视图</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >新增查询</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem divided>删除数据库</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+
+        <!-- 四级树表右击事件 -->
+        <Dropdown transfer ref="forthTableContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建表</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+        <!-- 四级视图表右击事件 -->
+        <Dropdown transfer ref="forthViewContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建视图</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
     </div>
 </template>
 
@@ -21,7 +74,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer'
                                     },
                                     on: {
@@ -73,7 +126,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer'
                                     },
                                     on: {
@@ -82,7 +135,13 @@ export default {
                                         },
                                         dblclick: () => {
                                             this.openConnection(data)
-                                        }
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            this.$refs.contentMenu.$refs.reference = event.target;
+                                            this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible;
+                                        }
                                     }
                                 },
                                 [
@@ -112,7 +171,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer',
                                         'line-height': '10px'
                                     },
@@ -122,7 +181,13 @@ export default {
                                         },
                                         dblclick: () => {
                                             this.getListForthItems(data)
-                                        }
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            this.$refs.thirdContentMenu.$refs.reference = event.target;
+                                            this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible;
+                                        }
                                     }
                                 },
                                 [
@@ -181,14 +246,26 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer',
                                         'line-height': '10px'
                                     },
                                     on: {
                                         click: () => {
                                             this.getShowDataList(data, target)
-                                        }
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            if(data.target === this.params.ShowTarget.table) {
+                                                this.$refs.forthTableContentMenu.$refs.reference = event.target;
+                                                this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible;
+                                            }
+                                            if(data.target === this.params.ShowTarget.view) {
+                                                this.$refs.forthViewContentMenu.$refs.reference = event.target;
+                                                this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible;
+                                            }
+                                        }
                                     }
                                 },
                                 [
