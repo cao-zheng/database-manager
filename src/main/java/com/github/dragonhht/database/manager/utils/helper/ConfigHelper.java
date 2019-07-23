@@ -1,6 +1,6 @@
 package com.github.dragonhht.database.manager.utils.helper;
 
-import com.github.dragonhht.database.manager.exception.ConfigCanNotBeEmpty;
+import com.github.dragonhht.database.manager.exception.ConfigCanNotBeEmptyException;
 import com.github.dragonhht.database.manager.exception.NotLoadFileException;
 import com.github.dragonhht.database.manager.utils.ConfigProUtil;
 import org.springframework.util.StringUtils;
@@ -36,7 +36,7 @@ public final class ConfigHelper {
         String key = "relational.connection.info.data.dir";
         String value = CONFIG_UTIL.getValue(key);
         if (StringUtils.isEmpty(value)) {
-            throw new ConfigCanNotBeEmpty("配置文件中 " + key + " 的值不能为空");
+            throw new ConfigCanNotBeEmptyException("配置文件中 " + key + " 的值不能为空");
         } else {
             return getFileAbsolutePath(value);
         }

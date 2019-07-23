@@ -8,7 +8,6 @@ import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +38,6 @@ public final class DESUtil {
 
     private DESUtil() {
         String path = System.getProperty("user.dir") + SECRET_KEY_PATH;
-        System.out.println(path);
         try {
             byte[] bytes = FileUtil.INSTANCE.readFile(path);
             if (bytes != null && bytes.length > 0) {

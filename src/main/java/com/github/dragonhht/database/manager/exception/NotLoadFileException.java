@@ -9,6 +9,7 @@ package com.github.dragonhht.database.manager.exception;
 public class NotLoadFileException extends RuntimeException {
 
     public NotLoadFileException() {
+        super("文件未正常加载");
     }
 
     public NotLoadFileException(String message) {

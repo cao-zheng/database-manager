@@ -1,5 +1,7 @@
 package com.github.dragonhht.database.manager.utils;
 
+import com.github.dragonhht.database.manager.common.RelationalPlatform;
+import com.github.dragonhht.database.manager.exception.PlatformCanNotNullException;
 import com.github.dragonhht.database.manager.model.JdbcConnectionData;
 import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.zaxxer.hikari.HikariDataSource;
@@ -25,6 +27,8 @@ public enum  DataSourceUtil {
 
     /** 当前用户所使用的的数据源. */
     private static String nowDataSource;
+    /** 当前使用的数据源平台. */
+    private static RelationalPlatform nowPlatform;
 
     /**
      * 添加数据源.
@@ -83,13 +87,23 @@ public enum  DataSourceUtil {
      */
     public void setNowDataSource(ConnectionInfo info) {
         if (dataSourceMap.get(info.getName()) != null) {
-            setNowDataSource(info.getName());
+            setNowDataSource(info.getName(), info.getPlatform());
             return;
         }
+        this.setNewDataSource(info, true);
+    }
+
+    /**
+     * 通过连接信息设置新的当前的数据源
+     * @param info
+     */
+    public void setNewDataSource(ConnectionInfo info, boolean save) {
         JdbcConnectionData data = ConnectionInfoUtil.converInfoToData(info);
         DataSource dataSource = initDataSource(data);
-        dataSourceMap.put(info.getName(), dataSource);
-        setNowDataSource(info.getName());
+        if (save) {
+            dataSourceMap.put(info.getName(), dataSource);
+        }
+        setNowDataSource(info.getName(), data.getPlatform());
     }
 
     /** 设置当前使用的数据源. */
@@ -98,7 +112,19 @@ public enum  DataSourceUtil {
     }
 
     /** 获取当前使用的数据源. */
-    public static void setNowDataSource(String nowDataSource) {
+    public static void setNowDataSource(String nowDataSource, RelationalPlatform platform) {
         DataSourceUtil.nowDataSource = nowDataSource;
+        if (platform == null) {
+            throw new PlatformCanNotNullException();
+        }
+        DataSourceUtil.nowPlatform = platform;
     }
-}
+
+    /** 获取当前使用的数据源平台. */
+    public static RelationalPlatform getNowPlatform() {
+        return nowPlatform;
+    }
+    /** 设置当前使用的数据源平台. */
+    public static void setNowPlatform(RelationalPlatform platform) {
+        DataSourceUtil.nowPlatform = platform;
+    }}

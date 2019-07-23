@@ -3,14 +3,66 @@
     <div >
         <Tree :data="listData" :class="listTreeClasses"></Tree>
         <Icon v-show="isCollapsed" type="ios-list-box" size="18" class="list-small-icon" @click="selectListIcon" />
+
+        <!-- 二级树右击事件 -->
+        <Dropdown transfer ref="contentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >打开连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >关闭连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >删除连接</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem divided>新建数据库</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+
+        <!-- 三级树右击事件 -->
+        <Dropdown transfer ref="thirdContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建表</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >创建视图</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem >新增查询</DropdownItem>
+                </a>
+                <a >
+                    <DropdownItem divided>删除数据库</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+
+        <!-- 四级树表右击事件 -->
+        <Dropdown transfer ref="forthTableContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建表</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
+        <!-- 四级视图表右击事件 -->
+        <Dropdown transfer ref="forthViewContentMenu" style="display: none;" trigger="click" placement="right-start">
+            <DropdownMenu slot="list" style="min-width: 80px;">
+                <a >
+                    <DropdownItem >创建视图</DropdownItem>
+                </a>
+            </DropdownMenu>
+        </Dropdown>
     </div>
 </template>
 
 <script>
-import { link } from 'fs';
 export default {
     name: 'TreeList',
-    props: ['isCollapsed'],
+    props: ['isCollapsed', 'newConnectionInfo'],
     data() {
         return {
             listData: [
@@ -22,7 +74,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer'
                                     },
                                     on: {
@@ -74,7 +126,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer'
                                     },
                                     on: {
@@ -83,7 +135,13 @@ export default {
                                         },
                                         dblclick: () => {
                                             this.openConnection(data)
-                                        }
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            this.$refs.contentMenu.$refs.reference = event.target;
+                                            this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible;
+                                        }
                                     }
                                 },
                                 [
@@ -94,7 +152,9 @@ export default {
                                                 marginRight: '8px'
                                             }
                                         }),
-                                        h('span', data.title)
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
                                     ])
                                 ]
                         )
@@ -111,7 +171,7 @@ export default {
                         return h('span', {
                                     style: {
                                         display: 'inline-block',
-                                        width: '100%',
+                                        'max-width': '100%',
                                         cursor: 'pointer',
                                         'line-height': '10px'
                                     },
@@ -120,8 +180,14 @@ export default {
                                             this.changeExpand(data)
                                         },
                                         dblclick: () => {
-                                            console.log(data)
-                                        }
+                                            this.getListForthItems(data)
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            this.$refs.thirdContentMenu.$refs.reference = event.target;
+                                            this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible;
+                                        }
                                     }
                                 },
                                 [
@@ -132,12 +198,106 @@ export default {
                                                 marginRight: '8px'
                                             }
                                         }),
-                                        h('span', data.title)
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
                                     ])
                                 ]
                         )
                     }
             return obj
+        },
+        // 获取第四层级的节点名称
+        getForthItemTitle: function(target) {
+            switch(target) {
+                case this.params.ShowTarget.view:
+                    return '视图'
+                case this.params.ShowTarget.table:
+                    return '表'
+                case this.params.ShowTarget.select:
+                    return '查询'
+            }
+        },
+        // 获取第四层级的节点图标
+        getForthItemIcon: function(target) {
+            switch(target) {
+                case this.params.ShowTarget.view:
+                    return 'icon-shitu'
+                case this.params.ShowTarget.table:
+                    return 'icon-biaoge'
+                case this.params.ShowTarget.select:
+                    return 'icon-0303'
+            }
+        },
+        // 获取展示的数据
+        getShowDataList: function(data, target) {
+            let obj = new Object()
+            obj.target = target
+            obj.info = data.info
+            this.$emit('transferContentData', obj)
+        },
+        // 获取第四层级的单个节点
+        getListForthItem: function(info, target) {
+            let obj = new Object()
+            obj.info = info
+            obj.target = target
+            obj.title = this.getForthItemTitle(target)
+            obj.render = (h, { data }) => {
+                        return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        'max-width': '100%',
+                                        cursor: 'pointer',
+                                        'line-height': '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.getShowDataList(data, target)
+                                        },
+                                        //右键点击事件
+                                        contextmenu: (e) => {
+                                            e.preventDefault();
+                                            if(data.target === this.params.ShowTarget.table) {
+                                                this.$refs.forthTableContentMenu.$refs.reference = event.target;
+                                                this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible;
+                                            }
+                                            if(data.target === this.params.ShowTarget.view) {
+                                                this.$refs.forthViewContentMenu.$refs.reference = event.target;
+                                                this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible;
+                                            }
+                                        }
+                                    }
+                                },
+                                [
+                                    h('span', [
+                                        h('i', {
+                                            class: `iconfont ${this.getForthItemIcon(target)}`,
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', {
+                                            class: ['tree-item']
+                                        }, data.title)
+                                    ])
+                                ]
+                        )
+                    }
+            return obj
+        },
+        // 获取第四层级的所有节点
+        getListForthItems: function(data) {
+            if(!data.opened) {
+                const targets = [this.params.ShowTarget.table, this.params.ShowTarget.view, this.params.ShowTarget.select]
+                let children = []
+                let info = data.info
+                targets.forEach(target => {
+                    children.push(this.getListForthItem(info, target))
+                })
+                this.$set(data, 'children', children)
+                this.$set(data, 'expand', true)
+                this.$set(data, 'opened', true)
+            }
         },
         // 改变节点的展开状态
         changeExpand: function(data) {
@@ -165,12 +325,6 @@ export default {
             if(!data.opened) {
                this.getDBs(data)
             }
-            const children = data.children || [];
-            children.push({
-                title: 'appended node',
-                expand: true
-            });
-            this.$set(data, 'children', children)
             this.$set(data, 'expand', true)
             this.$set(data, 'opened', true)
         },
@@ -185,7 +339,7 @@ export default {
             }).then(res => {
                 let index = 0
                 res.data.forEach(item => {
-                    let connectionInfo = this.createConnectionInfo(item.name, info)
+                    let connectionInfo = this.createConnectionInfo(item.name, info, true)
                     let node = this.getListThirdItem(item.name, index++, connectionInfo)
                     list.push(node)
                 })
@@ -195,7 +349,7 @@ export default {
             })
         },
         // 创建数据库节点的连接数据信息
-        createConnectionInfo: function(suffix, info) {
+        createConnectionInfo: function(suffix, info, isDB) {
             let obj = new Object()
             obj.platform = info.platform
             obj.name = info.name + '.' + suffix
@@ -203,7 +357,11 @@ export default {
             obj.port = info.port
             obj.userName = info.userName
             obj.password = info.password
-            obj.db = info.db
+            if(isDB) {
+                obj.db = suffix
+            } else {
+                obj.db = info.db
+            }
             obj.serviceName = info.serviceName
             return obj
         }
@@ -222,6 +380,19 @@ export default {
         }).catch(err => {
             console.log(err)
         })
+    },
+    watch: {
+        newConnectionInfo: {
+            handler(newValue, oldValue) {
+                // 新增连接信息
+                if(newValue.target === 'new') {
+                    console.log(this.children.length)
+                    this.children.push(this.getListItem(this.children.length, newValue.info))
+                    this.$set(this.listData[0], 'children', this.children)
+                }
+            },
+            deep: true
+        }
     }
 }
 </script>
@@ -241,6 +412,16 @@ export default {
 <style lang="less">
 .ivu-tree ul li {
     margin: 0 !important;
+}
+
+.tree-item {
+    border-radius: 5px;
+    padding: 2px 5px;
+    min-width: 100px;
+
+    &:hover {
+        background: #99CCFF;
+    }
 }
 </style>
 

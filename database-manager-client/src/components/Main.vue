@@ -2,18 +2,23 @@
 <template>
     <div class="layout">
         <Header :style="{background: '#fff', 'border-bottom': '1px solid #DEDEDE', height: '72px'}">
-          <HeaderMenu></HeaderMenu>
+          <HeaderMenu @transferNewConnection="addNewConnection"></HeaderMenu>
         </Header>
         <Layout :style="{height: 'calc(100vh - 72px)'}">
             <Sider collapsible :collapsed-width="20"  v-model="isCollapsed" 
               :style="{background: '#fff', 'border-right': '1px solid #DEDEDE'}">
-                <TreeList :isCollapsed="isCollapsed" @transferCollapsed="selectListIcon"></TreeList>
+                <TreeList
+                  :isCollapsed="isCollapsed"
+                  @transferCollapsed="selectListIcon" 
+                  @transferContentData="setContentData"
+                  :newConnectionInfo="newConnectionInfo">
+                </TreeList>
             </Sider>
             <Layout :style="{height: 'calc(100vh - 72px)'}">
                 <Content>
-                    主题内容
+                    <MainTabs :contentData="contentData"></MainTabs>
                 </Content>
-                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px'}">
+                <Footer :style="{'border-top': '1px solid #DEDEDE', height: '20px', position: 'fixed', bottom: '0', width:'100%'}">
                   状态栏
                 </Footer>
             </Layout>
@@ -23,12 +28,15 @@
 <script>
 import HeaderMenu from './menu/HeaderMenu'
 import TreeList from './sider/TreeList'
+import MainTabs from './content/MainTabs'
 
 export default {
   name: 'Main',
   data () {
       return {
-          isCollapsed: false
+          isCollapsed: false,
+          contentData: {},
+          newConnectionInfo: {}
       };
   },
   computed: {
@@ -42,11 +50,24 @@ export default {
   methods: {
     selectListIcon: function(result) {
       this.isCollapsed = result
+    },
+    // 设置主区域展示的数据
+    setContentData: function(data) {
+      this.contentData = data
+    },
+    // 创建新的连接信息节点
+    addNewConnection: function(data) {
+      let obj = new Object()
+      // 添加新的连接信息
+      obj.target = 'new'
+      obj.info = data
+      this.newConnectionInfo = obj
     }
   },
   components: {
     HeaderMenu,
-    TreeList
+    TreeList,
+    MainTabs
   }
 }
 </script>
@@ -61,5 +82,12 @@ export default {
     }
     .ivu-layout-header {
       padding: 0 0 !important;
+    }
+
+    span {
+      -webkit-user-select:none;
+      -moz-user-select:none;
+      -ms-user-select:none;
+      user-select:none;
     }
 </style>
