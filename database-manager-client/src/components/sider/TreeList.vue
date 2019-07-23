@@ -7,17 +7,17 @@
         <!-- 二级树右击事件 -->
         <Dropdown transfer ref="contentMenu" style="display: none;" trigger="click" placement="right-start">
             <DropdownMenu slot="list" style="min-width: 80px;">
-                <a >
-                    <DropdownItem >打开连接</DropdownItem>
+                <a @click="openConnection">
+                    <DropdownItem :disabled="itemDataInfo.opened">打开连接</DropdownItem>
                 </a>
-                <a >
-                    <DropdownItem >关闭连接</DropdownItem>
+                <a @click="closeConnection">
+                    <DropdownItem :disabled="!itemDataInfo.opened">关闭连接</DropdownItem>
                 </a>
-                <a >
+                <a @click="showDelConnection">
                     <DropdownItem >删除连接</DropdownItem>
                 </a>
                 <a >
-                    <DropdownItem divided>新建数据库</DropdownItem>
+                    <DropdownItem divided :disabled="!itemDataInfo.opened">新建数据库</DropdownItem>
                 </a>
             </DropdownMenu>
         </Dropdown>
@@ -25,7 +25,7 @@
         <!-- 三级树右击事件 -->
         <Dropdown transfer ref="thirdContentMenu" style="display: none;" trigger="click" placement="right-start">
             <DropdownMenu slot="list" style="min-width: 80px;">
-                <a >
+                <a>
                     <DropdownItem >创建表</DropdownItem>
                 </a>
                 <a >
@@ -56,10 +56,22 @@
                 </a>
             </DropdownMenu>
         </Dropdown>
+
+        <!-- 删除确认框 -->
+        <Modal
+            v-model="showDelDialog"
+            title="删除确认"
+            @on-ok="delOk"
+            @on-cancel="delCancel">
+            <p>{{delMessage}}</p>
+        </Modal>
+
     </div>
 </template>
 
 <script>
+import Qs from 'qs'
+
 export default {
     name: 'TreeList',
     props: ['isCollapsed', 'newConnectionInfo'],
@@ -101,7 +113,10 @@ export default {
                     children: this.children
                 }
             ],
-            children: []
+            children: [],
+            itemDataInfo: {},
+            showDelDialog: false,
+            delMessage: ''
         }
     },
     computed: {
@@ -114,6 +129,12 @@ export default {
     methods: {
         selectListIcon: function() {
             this.$emit('transferCollapsed', false)
+        },
+        // 重置输的右键菜单显示
+        resetContentMenuShow: function() {
+            this.$refs.contentMenu.currentVisible = false
+            this.$refs.thirdContentMenu.currentVisible = false
+            this.$refs.forthTableContentMenu.currentVisible = false
         },
         // 获取树中展示的连接元素
         getListItem: function(index, info) {
@@ -134,13 +155,16 @@ export default {
                                             this.changeExpand(data)
                                         },
                                         dblclick: () => {
-                                            this.openConnection(data)
+                                            this.itemDataInfo = data
+                                            this.openConnection()
                                         },
                                         //右键点击事件
                                         contextmenu: (e) => {
-                                            e.preventDefault();
-                                            this.$refs.contentMenu.$refs.reference = event.target;
-                                            this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible;
+                                            this.resetContentMenuShow()
+                                            e.preventDefault()
+                                            this.$refs.contentMenu.$refs.reference = event.target
+                                            this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible
+                                            this.itemDataInfo = data
                                         }
                                     }
                                 },
@@ -184,14 +208,15 @@ export default {
                                         },
                                         //右键点击事件
                                         contextmenu: (e) => {
-                                            e.preventDefault();
-                                            this.$refs.thirdContentMenu.$refs.reference = event.target;
-                                            this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible;
+                                            this.resetContentMenuShow()
+                                            e.preventDefault()
+                                            this.$refs.thirdContentMenu.$refs.reference = event.target
+                                            this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible
                                         }
                                     }
                                 },
                                 [
-                                    h('span', [
+                                    h('span', [ 
                                         h('i', {
                                             class: `iconfont icon-shujuku`,
                                             style: {
@@ -256,14 +281,15 @@ export default {
                                         },
                                         //右键点击事件
                                         contextmenu: (e) => {
-                                            e.preventDefault();
+                                            e.preventDefault()
+                                            this.resetContentMenuShow()
                                             if(data.target === this.params.ShowTarget.table) {
-                                                this.$refs.forthTableContentMenu.$refs.reference = event.target;
-                                                this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible;
+                                                this.$refs.forthTableContentMenu.$refs.reference = event.target
+                                                this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible
                                             }
                                             if(data.target === this.params.ShowTarget.view) {
-                                                this.$refs.forthViewContentMenu.$refs.reference = event.target;
-                                                this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible;
+                                                this.$refs.forthViewContentMenu.$refs.reference = event.target
+                                                this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible
                                             }
                                         }
                                     }
@@ -321,12 +347,52 @@ export default {
             }
         },
         // 打开连接
-        openConnection: function(data) {
-            if(!data.opened) {
-               this.getDBs(data)
+        openConnection: function() {
+            if(!this.itemDataInfo.opened) {
+               this.getDBs(this.itemDataInfo)
             }
-            this.$set(data, 'expand', true)
-            this.$set(data, 'opened', true)
+            this.$set(this.itemDataInfo, 'expand', true)
+            this.$set(this.itemDataInfo, 'opened', true)
+        },
+        // 关闭连接
+        closeConnection: function() {
+            this.$set(this.itemDataInfo, 'expand', false)
+            this.$set(this.itemDataInfo, 'opened', false)
+            this.$set(this.itemDataInfo, 'children', [])
+        },
+        // 删除连接
+        showDelConnection: function() {
+            this.showDelDialog = true
+            this.delMessage = '是否删除该连接信息'
+            this.$set(this.itemDataInfo, 'target', 'connection')
+        },
+        // 关闭删除确认框
+        delCancel: function() {
+            this.showDelDialog = false
+        },
+        // 确认删除
+        delOk: function() {
+            switch(this.itemDataInfo.target) {
+                case 'connection':
+                    this.delConnection()
+                    break;
+            }
+        },
+        // 删除连接
+        delConnection: function() {
+            this.$axios({
+                method: 'delete',
+                url: `${this.params.MainHost}/connection/connection`,
+                data: {name: this.itemDataInfo.info.name}
+            }).then(res => {
+                if(res.data) {
+                    this.$delete(this.listData[0].children, this.itemDataInfo.index)
+                    this.$Message.success('删除成功');
+                }
+            }).catch(err => {
+                console.log(err)
+                this.$Message.error('删除失败');
+            })
         },
         // 获取连接下的数据库信息
         getDBs: function(data) {

@@ -88,13 +88,13 @@ public class ConnectionController {
 
     /**
      * 删除保存的连接信息
-     * @param name
+     * @param info
      * @return
      * @throws UnsupportedEncodingException
      */
     @DeleteMapping("/connection")
-    public boolean delConnectionInfo(String name) throws UnsupportedEncodingException {
-        return ConnectionInfoUtil.delConnectionInfo(name);
+    public boolean delConnectionInfo(@RequestBody ConnectionInfo info) throws UnsupportedEncodingException {
+        return ConnectionInfoUtil.delConnectionInfo(info.getName());
     }
 
 }

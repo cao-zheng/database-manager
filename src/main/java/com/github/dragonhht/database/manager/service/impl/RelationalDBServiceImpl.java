@@ -9,8 +9,10 @@ import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.github.dragonhht.database.manager.vo.DBInfo;
 import com.github.dragonhht.database.manager.vo.TableInfo;
 import com.github.dragonhht.database.manager.vo.ViewInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
  * @Date: 2019-7-15
  */
 @Service
+@Slf4j
 public class RelationalDBServiceImpl implements RelationalDBService {
 
     @Autowired
@@ -116,5 +119,22 @@ public class RelationalDBServiceImpl implements RelationalDBService {
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean createDB(DBInfo info) throws Exception {
+        boolean ok = false;
+        // 要考虑其他数据库
+        String sql = "CREATE DATABASE " + info.getName();
+        if (!StringUtils.isEmpty(info.getCharset())) {
+            sql += " DEFAULT CHARSET " + info.getCharset();
+        }
+        try {
+            relationalService.ddl(sql);
+            ok = true;
+        } catch (Exception e) {
+            log.error("创建数据库失败", e);
+        }
+        return ok;
     }
 }

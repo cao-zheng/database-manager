@@ -23,4 +23,6 @@ public class DBInfo implements Serializable {
     private String name;
     /** 数据库类型. */
     private RelationalPlatform platform;
+    /** 字符集. */
+    private String charset;
 }

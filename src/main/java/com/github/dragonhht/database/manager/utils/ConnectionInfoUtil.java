@@ -202,7 +202,7 @@ public final class ConnectionInfoUtil {
         // TODO 暂时只有MySQL
         switch (info.getPlatform()) {
             case MYSQL:
-                data.setDriverClassName("com.mysql.jdbc.Driver");
+                data.setDriverClassName("com.mysql.cj.jdbc.Driver");
                 break;
             default:
                 break;
@@ -230,7 +230,7 @@ public final class ConnectionInfoUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        ConnectionInfo info = new ConnectionInfo();
+        /*ConnectionInfo info = new ConnectionInfo();
         info.setUserName("root");
         info.setDb("*");
         info.setHost("my.dragon.com");
@@ -241,7 +241,8 @@ public final class ConnectionInfoUtil {
         info.setName("link-1");
         saveConnectionInfo(info);
         List<ConnectionInfo> infos = getAllConnection();
-        infos.forEach(System.out::println);
+        infos.forEach(System.out::println);*/
+        delConnectionInfo("ces");
     }
 
 }

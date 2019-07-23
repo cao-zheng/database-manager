@@ -73,4 +73,15 @@ public class DBController {
         return relationalDBService.getAllNowViews();
     }
 
+    /**
+     * 创建新数据库.
+     * @param info
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/db")
+    public boolean createDB(@RequestBody DBInfo info) throws Exception {
+        return relationalDBService.createDB(info);
+    }
+
 }

@@ -45,7 +45,10 @@ public enum FileUtil {
             this.createFile(file);
         }
         Path path = file.toPath();
-        // 以追加模式添加到文件.
+        if (mode == StandardOpenOption.WRITE) {
+            Files.write(path, bytes);
+            return;
+        }
         Files.write(path, bytes, mode);
     }
 

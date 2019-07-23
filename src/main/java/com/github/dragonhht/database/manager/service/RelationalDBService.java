@@ -60,4 +60,12 @@ public interface RelationalDBService {
      */
     List<ViewInfo> getAllNowViews() throws Exception;
 
+    /**
+     * 创建数据库
+     * @param info
+     * @return
+     * @throws Exception
+     */
+    boolean createDB(DBInfo info) throws Exception;
+
 }
