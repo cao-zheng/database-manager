@@ -62,10 +62,9 @@ public interface RelationalDBService {
 
     /**
      * 创建数据库
-     * @param info
      * @return
      * @throws Exception
      */
-    boolean createDB(DBInfo info) throws Exception;
+    boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception;
 
 }

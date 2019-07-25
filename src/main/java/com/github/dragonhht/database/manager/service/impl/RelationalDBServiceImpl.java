@@ -54,7 +54,7 @@ public class RelationalDBServiceImpl implements RelationalDBService {
             for (int i = 1; i < datas.size(); i++) {
                 DBInfo info = new DBInfo();
                 info.setPlatform(platform);
-                info.setName(String.valueOf(datas.get(i).getValues().get(0)));
+                info.setDbName(String.valueOf(datas.get(i).getValues().get(0)));
                 list.add(info);
             }
         }
@@ -122,12 +122,13 @@ public class RelationalDBServiceImpl implements RelationalDBService {
     }
 
     @Override
-    public boolean createDB(DBInfo info) throws Exception {
+    public boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception {
+        DataSourceUtil.INSTANCE.setNowDataSource(connectionInfo);
         boolean ok = false;
         // 要考虑其他数据库
-        String sql = "CREATE DATABASE " + info.getName();
-        if (!StringUtils.isEmpty(info.getCharset())) {
-            sql += " DEFAULT CHARSET " + info.getCharset();
+        String sql = "CREATE DATABASE " + dbInfo.getDbName();
+        if (!StringUtils.isEmpty(dbInfo.getCharset())) {
+            sql += " DEFAULT CHARSET " + dbInfo.getCharset();
         }
         try {
             relationalService.ddl(sql);

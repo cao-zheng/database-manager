@@ -238,7 +238,7 @@ public final class ConnectionInfoUtil {
         info.setPort(3307);
         info.setUserName("root");
         info.setPassword("123");
-        info.setName("link-1");
+        info.setDbName("link-1");
         saveConnectionInfo(info);
         List<ConnectionInfo> infos = getAllConnection();
         infos.forEach(System.out::println);*/

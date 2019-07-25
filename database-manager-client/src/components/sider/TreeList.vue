@@ -448,7 +448,7 @@ export default {
                 let index = 0
                 res.data.forEach(item => {
                     let connectionInfo = this.createConnectionInfo(item.name, info, true)
-                    let node = this.getListThirdItem(item.name, index++, connectionInfo)
+                    let node = this.getListThirdItem(item.dbName, index++, connectionInfo)
                     list.push(node)
                 })
                 this.$set(data, 'children', list)
