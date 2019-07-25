@@ -50,6 +50,7 @@ public class DBController {
      */
     @PostMapping("/views")
     public List<ViewInfo> getAllViews(@RequestBody ConnectionInfo info) throws Exception {
+        System.out.println(info);
         return relationalDBService.getAllViews(info);
     }
 
