@@ -16,7 +16,7 @@
                 <a @click="showDelConnection">
                     <DropdownItem >删除连接</DropdownItem>
                 </a>
-                <a >
+                <a @click="showCreateDbDialog">
                     <DropdownItem divided :disabled="!itemDataInfo.opened">新建数据库</DropdownItem>
                 </a>
             </DropdownMenu>
@@ -66,17 +66,24 @@
             <p>{{delMessage}}</p>
         </Modal>
 
+        <!-- 新建数据库弹框 -->
+        <new-mysql-db :showNewMySQLDBDialog="showNewMySQLDBDialog"
+            :info="itemDataInfo.info"
+            @transferDBDialogShow="setShowNewDBDialog">
+        </new-mysql-db>
     </div>
 </template>
 
 <script>
 import Qs from 'qs'
+import NewMySQLDB from '../dialog/db/NewMySQLDB'
 
 export default {
     name: 'TreeList',
     props: ['isCollapsed', 'newConnectionInfo'],
     data() {
         return {
+            showNewMySQLDBDialog: false,
             listData: [
                 {
                     title: '我的连接',
@@ -127,6 +134,23 @@ export default {
         }
     },
     methods: {
+        setShowNewDBDialog: function(result) {
+            switch(result.platform) {
+                case this.params.SqlPlatform.mysql:
+                    this.showNewMySQLDBDialog = result.isShow
+                    break
+                case this.params.SqlPlatform.postgresql:
+                    break
+                case this.params.SqlPlatform.oracle:
+                    break
+                case this.params.SqlPlatform.sqlserver:
+                    break
+                case this.params.SqlPlatform.mariadb:
+                    break
+                default:
+                    break
+            }
+        },
         selectListIcon: function() {
             this.$emit('transferCollapsed', false)
         },
@@ -366,6 +390,24 @@ export default {
             this.delMessage = '是否删除该连接信息'
             this.$set(this.itemDataInfo, 'target', 'connection')
         },
+        // 创建新数据库
+        showCreateDbDialog: function() {
+            switch(this.itemDataInfo.info.platform) {
+                case this.params.SqlPlatform.mysql:
+                    this.showNewMySQLDBDialog = true
+                    break
+                case this.params.SqlPlatform.postgresql:
+                    break
+                case this.params.SqlPlatform.oracle:
+                    break
+                case this.params.SqlPlatform.sqlserver:
+                    break
+                case this.params.SqlPlatform.mariadb:
+                    break
+                default:
+                    break
+            }
+        },
         // 关闭删除确认框
         delCancel: function() {
             this.showDelDialog = false
@@ -459,6 +501,9 @@ export default {
             },
             deep: true
         }
+    },
+    components: {
+        'new-mysql-db': NewMySQLDB
     }
 }
 </script>
