@@ -9,7 +9,7 @@ server:
 #    url: jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=utf-8
 #    username: root
 #    password: 123
-#    driver-class-dbName: com.mysql.jdbc.Driver
+#    driver-class-name: com.mysql.jdbc.Driver
 
 #mybatis:
 #  mapper-locations: classpath:mybatis/*.xml

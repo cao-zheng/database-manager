@@ -77,6 +77,7 @@
 <script>
 import Qs from 'qs'
 import NewMySQLDB from '../dialog/db/NewMySQLDB'
+import TreeItemRender from './js/TreeItemRender'
 
 export default {
     name: 'TreeList',
@@ -89,34 +90,11 @@ export default {
                     title: '我的连接',
                     expand: true,
                     index: 0,
-                    render: (h, { data }) => {
-                        return h('span', {
-                                    style: {
-                                        display: 'inline-block',
-                                        'max-width': '100%',
-                                        cursor: 'pointer'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.changeExpand(data)
-                                        }
-                                    }
-                                },
-                                [
-                                    h('span', [
-                                        h('Icon', {
-                                            props: {
-                                                type: 'ios-folder-outline'
-                                            },
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', data.title)
-                                    ])
-                                ]
-                        )
-                    },
+                    render: (h, { data }) => TreeItemRender.rootItemRender(h, data, {
+                            click: () => {
+                                this.changeExpand(data)
+                            }
+                        }),
                     children: this.children
                 }
             ],
@@ -167,46 +145,23 @@ export default {
             obj.index = index
             obj.platform = info.platform
             obj.info = info
-            obj.render = (h, { data }) => {
-                        return h('span', {
-                                    style: {
-                                        display: 'inline-block',
-                                        'max-width': '100%',
-                                        cursor: 'pointer'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.changeExpand(data)
-                                        },
-                                        dblclick: () => {
-                                            this.itemDataInfo = data
-                                            this.openConnection()
-                                        },
-                                        //右键点击事件
-                                        contextmenu: (e) => {
-                                            this.resetContentMenuShow()
-                                            e.preventDefault()
-                                            this.$refs.contentMenu.$refs.reference = event.target
-                                            this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible
-                                            this.itemDataInfo = data
-                                        }
-                                    }
-                                },
-                                [
-                                    h('span', [
-                                        h('i', {
-                                            class: `iconfont ${this.getPlatformIcon(info.platform)}`,
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', {
-                                            class: ['tree-item']
-                                        }, data.title)
-                                    ])
-                                ]
-                        )
-                    }
+            obj.render = (h, { data }) => TreeItemRender.connectionItemRender(h, data, info.platform, {
+                click: () => {
+                    this.changeExpand(data)
+                },
+                dblclick: () => {
+                    this.itemDataInfo = data
+                    this.openConnection()
+                },
+                //右键点击事件
+                contextmenu: (e) => {
+                    this.resetContentMenuShow()
+                    e.preventDefault()
+                    this.$refs.contentMenu.$refs.reference = event.target
+                    this.$refs.contentMenu.currentVisible = !this.$refs.contentMenu.currentVisible
+                    this.itemDataInfo = data
+                }
+                })
             return obj
         },
         getListThirdItem: function(name, index, info) {
@@ -215,45 +170,21 @@ export default {
             obj.index = index
             obj.platform = info.platform
             obj.info = info
-            obj.render = (h, { data }) => {
-                        return h('span', {
-                                    style: {
-                                        display: 'inline-block',
-                                        'max-width': '100%',
-                                        cursor: 'pointer',
-                                        'line-height': '10px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.changeExpand(data)
-                                        },
-                                        dblclick: () => {
-                                            this.getListForthItems(data)
-                                        },
-                                        //右键点击事件
-                                        contextmenu: (e) => {
-                                            this.resetContentMenuShow()
-                                            e.preventDefault()
-                                            this.$refs.thirdContentMenu.$refs.reference = event.target
-                                            this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible
-                                        }
-                                    }
-                                },
-                                [
-                                    h('span', [ 
-                                        h('i', {
-                                            class: `iconfont icon-shujuku`,
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', {
-                                            class: ['tree-item']
-                                        }, data.title)
-                                    ])
-                                ]
-                        )
-                    }
+            obj.render = (h, { data }) => TreeItemRender.thirdItemRender(h, data, {
+                click: () => {
+                    this.changeExpand(data)
+                },
+                dblclick: () => {
+                    this.getListForthItems(data)
+                },
+                //右键点击事件
+                contextmenu: (e) => {
+                this.resetContentMenuShow()
+                e.preventDefault()
+                this.$refs.thirdContentMenu.$refs.reference = event.target
+                this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible
+                }
+            })
             return obj
         },
         // 获取第四层级的节点名称
@@ -291,48 +222,24 @@ export default {
             obj.info = info
             obj.target = target
             obj.title = this.getForthItemTitle(target)
-            obj.render = (h, { data }) => {
-                        return h('span', {
-                                    style: {
-                                        display: 'inline-block',
-                                        'max-width': '100%',
-                                        cursor: 'pointer',
-                                        'line-height': '10px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.getShowDataList(data, target)
-                                        },
-                                        //右键点击事件
-                                        contextmenu: (e) => {
-                                            e.preventDefault()
-                                            this.resetContentMenuShow()
-                                            if(data.target === this.params.ShowTarget.table) {
-                                                this.$refs.forthTableContentMenu.$refs.reference = event.target
-                                                this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible
-                                            }
-                                            if(data.target === this.params.ShowTarget.view) {
-                                                this.$refs.forthViewContentMenu.$refs.reference = event.target
-                                                this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible
-                                            }
-                                        }
-                                    }
-                                },
-                                [
-                                    h('span', [
-                                        h('i', {
-                                            class: `iconfont ${this.getForthItemIcon(target)}`,
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', {
-                                            class: ['tree-item']
-                                        }, data.title)
-                                    ])
-                                ]
-                        )
+            obj.render = (h, { data }) => TreeItemRender.forthItemRender(h, data, target, {
+                click: () => {
+                    this.getShowDataList(data, target)
+                },
+                //右键点击事件
+                contextmenu: (e) => {
+                    e.preventDefault()
+                    this.resetContentMenuShow()
+                    if(data.target === this.params.ShowTarget.table) {
+                        this.$refs.forthTableContentMenu.$refs.reference = event.target
+                        this.$refs.forthTableContentMenu.currentVisible = !this.$refs.forthTableContentMenu.currentVisible
                     }
+                    if(data.target === this.params.ShowTarget.view) {
+                    this.$refs.forthViewContentMenu.$refs.reference = event.target
+                    this.$refs.forthViewContentMenu.currentVisible = !this.$refs.forthViewContentMenu.currentVisible
+                    }
+                }
+            })
             return obj
         },
         // 获取第四层级的所有节点
@@ -352,23 +259,6 @@ export default {
         // 改变节点的展开状态
         changeExpand: function(data) {
             this.$set(data, 'expand', !data.expand)
-        },
-        // 节点获取数据库类型图标
-        getPlatformIcon: function(platform) {
-            switch(platform) {
-                case this.params.SqlPlatform.mysql:
-                    return 'icon-mysql'
-                case this.params.SqlPlatform.postgresql:
-                    return 'icon-postgresql'
-                case this.params.SqlPlatform.oracle:
-                    return 'icon-oracle'
-                case this.params.SqlPlatform.sqlserver:
-                    return 'icon-shujukuleixingtubiao-kuozhan-2'
-                case this.params.SqlPlatform.mariadb:
-                    return 'icon-MariaDB'
-                default:
-                    return ''
-            }
         },
         // 打开连接
         openConnection: function() {
@@ -447,7 +337,7 @@ export default {
             }).then(res => {
                 let index = 0
                 res.data.forEach(item => {
-                    let connectionInfo = this.createConnectionInfo(item.name, info, true)
+                    let connectionInfo = this.createConnectionInfo(item.dbName, info, true)
                     let node = this.getListThirdItem(item.dbName, index++, connectionInfo)
                     list.push(node)
                 })
