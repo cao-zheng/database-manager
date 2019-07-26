@@ -71,7 +71,7 @@ public class DatabaseManagerApplicationTests {
 
     @Test
     public void testInsert() throws Exception {
-        int n = relationalService.insert("insert into user(id, name, age, className) VALUE(2, 'huang', 18, 'A123')");
+        int n = relationalService.insert("insert into user(id, dbName, age, className) VALUE(2, 'huang', 18, 'A123')");
         System.out.println(n);
     }
 

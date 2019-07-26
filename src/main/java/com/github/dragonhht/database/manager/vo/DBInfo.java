@@ -20,7 +20,9 @@ public class DBInfo implements Serializable {
     private static final long serialVersionUID = 6401285815205620464L;
 
     /** 数据库名称. */
-    private String name;
+    private String dbName;
     /** 数据库类型. */
     private RelationalPlatform platform;
+    /** 字符集. */
+    private String charset;
 }

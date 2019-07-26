@@ -50,6 +50,7 @@ public class DBController {
      */
     @PostMapping("/views")
     public List<ViewInfo> getAllViews(@RequestBody ConnectionInfo info) throws Exception {
+        System.out.println(info);
         return relationalDBService.getAllViews(info);
     }
 
@@ -71,6 +72,16 @@ public class DBController {
     @GetMapping("/views")
     public List<ViewInfo> getAllNowViews() throws Exception {
         return relationalDBService.getAllNowViews();
+    }
+
+    /**
+     * 创建新数据库.
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/db")
+    public boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception {
+        return relationalDBService.createDB(dbInfo, connectionInfo);
     }
 
 }

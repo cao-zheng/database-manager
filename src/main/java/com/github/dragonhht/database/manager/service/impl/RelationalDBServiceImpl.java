@@ -9,8 +9,10 @@ import com.github.dragonhht.database.manager.vo.ConnectionInfo;
 import com.github.dragonhht.database.manager.vo.DBInfo;
 import com.github.dragonhht.database.manager.vo.TableInfo;
 import com.github.dragonhht.database.manager.vo.ViewInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
  * @Date: 2019-7-15
  */
 @Service
+@Slf4j
 public class RelationalDBServiceImpl implements RelationalDBService {
 
     @Autowired
@@ -51,7 +54,7 @@ public class RelationalDBServiceImpl implements RelationalDBService {
             for (int i = 1; i < datas.size(); i++) {
                 DBInfo info = new DBInfo();
                 info.setPlatform(platform);
-                info.setName(String.valueOf(datas.get(i).getValues().get(0)));
+                info.setDbName(String.valueOf(datas.get(i).getValues().get(0)));
                 list.add(info);
             }
         }
@@ -116,5 +119,23 @@ public class RelationalDBServiceImpl implements RelationalDBService {
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception {
+        DataSourceUtil.INSTANCE.setNowDataSource(connectionInfo);
+        boolean ok = false;
+        // 要考虑其他数据库
+        String sql = "CREATE DATABASE " + dbInfo.getDbName();
+        if (!StringUtils.isEmpty(dbInfo.getCharset())) {
+            sql += " DEFAULT CHARSET " + dbInfo.getCharset();
+        }
+        try {
+            relationalService.ddl(sql);
+            ok = true;
+        } catch (Exception e) {
+            log.error("创建数据库失败", e);
+        }
+        return ok;
     }
 }
