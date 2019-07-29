@@ -70,7 +70,7 @@ export default {
    * @param {*} data 
    * @param {*} onEvent 
    */
-  thirdItemRender: function(h, data, onEvent) {
+  thirdItemRender: function(h, root, node, data, onEvent) {
     return h('span', {
         style: {
             display: 'inline-block',

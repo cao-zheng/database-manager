@@ -67,4 +67,13 @@ public interface RelationalDBService {
      */
     boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception;
 
+    /**
+     * 删除数据库.
+     * @param dbInfo
+     * @param connectionInfo
+     * @return
+     * @throws Exception
+     */
+    boolean delDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception;
+
 }

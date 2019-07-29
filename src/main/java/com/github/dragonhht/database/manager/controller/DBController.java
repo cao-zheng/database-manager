@@ -1,10 +1,7 @@
 package com.github.dragonhht.database.manager.controller;
 
 import com.github.dragonhht.database.manager.service.RelationalDBService;
-import com.github.dragonhht.database.manager.vo.ConnectionInfo;
-import com.github.dragonhht.database.manager.vo.DBInfo;
-import com.github.dragonhht.database.manager.vo.TableInfo;
-import com.github.dragonhht.database.manager.vo.ViewInfo;
+import com.github.dragonhht.database.manager.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +47,6 @@ public class DBController {
      */
     @PostMapping("/views")
     public List<ViewInfo> getAllViews(@RequestBody ConnectionInfo info) throws Exception {
-        System.out.println(info);
         return relationalDBService.getAllViews(info);
     }
 
@@ -82,6 +78,11 @@ public class DBController {
     @PostMapping("/db")
     public boolean createDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception {
         return relationalDBService.createDB(dbInfo, connectionInfo);
+    }
+
+    @DeleteMapping("/db")
+    public boolean delDB(@RequestBody ReviceInfo<DBInfo> dbInfo) throws Exception {
+        return relationalDBService.delDB(dbInfo.getInfo(), dbInfo.getConnectionInfo());
     }
 
 }

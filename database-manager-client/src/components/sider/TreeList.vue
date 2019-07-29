@@ -34,7 +34,7 @@
                 <a >
                     <DropdownItem >新增查询</DropdownItem>
                 </a>
-                <a >
+                <a @click="showDelDB">
                     <DropdownItem divided>删除数据库</DropdownItem>
                 </a>
             </DropdownMenu>
@@ -100,6 +100,8 @@ export default {
             ],
             children: [],
             itemDataInfo: {},
+            itemRootInfo: {},
+            itemNodeInfo: {},
             showDelDialog: false,
             delMessage: ''
         }
@@ -128,11 +130,23 @@ export default {
                 default:
                     break
             }
+            this.addTreeItem(result.target, result.title)
+        },
+        // 给当前选择的节点添加节点
+        addTreeItem: function(target, title) {
+            switch(target) {
+                case 'newDB':
+                    const children = this.itemDataInfo.children || [];
+                    children.push(
+                        this.getListThirdItem(title, children.length, this.createConnectionInfo(title, this.itemDataInfo.info, true))
+                    );
+                    this.$set(this.itemDataInfo, 'children', children);
+            }
         },
         selectListIcon: function() {
             this.$emit('transferCollapsed', false)
         },
-        // 重置输的右键菜单显示
+        // 重置树的右键菜单显示
         resetContentMenuShow: function() {
             this.$refs.contentMenu.currentVisible = false
             this.$refs.thirdContentMenu.currentVisible = false
@@ -170,7 +184,7 @@ export default {
             obj.index = index
             obj.platform = info.platform
             obj.info = info
-            obj.render = (h, { data }) => TreeItemRender.thirdItemRender(h, data, {
+            obj.render = (h, { root, node, data }) => TreeItemRender.thirdItemRender(h, root, node, data, {
                 click: () => {
                     this.changeExpand(data)
                 },
@@ -179,10 +193,13 @@ export default {
                 },
                 //右键点击事件
                 contextmenu: (e) => {
-                this.resetContentMenuShow()
-                e.preventDefault()
-                this.$refs.thirdContentMenu.$refs.reference = event.target
-                this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible
+                    this.resetContentMenuShow()
+                    e.preventDefault()
+                    this.$refs.thirdContentMenu.$refs.reference = event.target
+                    this.$refs.thirdContentMenu.currentVisible = !this.$refs.thirdContentMenu.currentVisible
+                    this.itemDataInfo = data
+                    this.itemRootInfo = root
+                    this.itemNodeInfo = node
                 }
             })
             return obj
@@ -198,17 +215,7 @@ export default {
                     return '查询'
             }
         },
-        // 获取第四层级的节点图标
-        getForthItemIcon: function(target) {
-            switch(target) {
-                case this.params.ShowTarget.view:
-                    return 'icon-shitu'
-                case this.params.ShowTarget.table:
-                    return 'icon-biaoge'
-                case this.params.ShowTarget.select:
-                    return 'icon-0303'
-            }
-        },
+        
         // 获取展示的数据
         getShowDataList: function(data, target) {
             let obj = new Object()
@@ -308,6 +315,9 @@ export default {
                 case 'connection':
                     this.delConnection()
                     break;
+                case 'db':
+                    this.delDB()
+                    break;
             }
         },
         // 删除连接
@@ -325,6 +335,43 @@ export default {
                 console.log(err)
                 this.$Message.error('删除失败');
             })
+        },
+        //显示删除数据库的对话框
+        showDelDB: function() {
+            this.showDelDialog = true
+            this.delMessage = '是否删除该数据库'
+            this.$set(this.itemDataInfo, 'target', 'db')
+        },
+        // 删除数据库
+        delDB: function() {
+            let data = {
+                info: {
+                    dbName: this.itemDataInfo.title
+                },
+                connectionInfo: this.itemDataInfo.info
+            }
+            this.$axios({
+                method: 'delete',
+                url: `${this.params.MainHost}/db/db`,
+                data: data
+            }).then(res => {
+                if(res.data) {
+                    this.$Message.success('删除成功');
+                    this.delTreeItem(this.itemRootInfo, this.itemNodeInfo, this.itemDataInfo)
+                } else {
+                    this.$Message.error('删除失败');
+                }
+            }).catch(err => {
+                console.log(err)
+                this.$Message.error('删除失败');
+            })
+        },
+        // 删除树形结构的节点
+        delTreeItem: function(root, node, data) {
+            const parentKey = root.find(el => el === node).parent;
+            const parent = root.find(el => el.nodeKey === parentKey).node;
+            const index = parent.children.indexOf(data);
+            parent.children.splice(index, 1);
         },
         // 获取连接下的数据库信息
         getDBs: function(data) {
