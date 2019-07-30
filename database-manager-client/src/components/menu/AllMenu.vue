@@ -48,28 +48,23 @@
 
         <new-mysql-dialog
             :showMySQLDialog="showMySQLDialog"
-            @transferDialogShow="setShowNewDialog"
-            @transferNewConnection="addNewConnection">
+            @transferDialogShow="setShowNewDialog">
         </new-mysql-dialog>
         <new-postgresql-dialog
             :showPostgreSQLDialog="showPostgreSQLDialog"
-            @transferDialogShow="setShowNewDialog"
-            @transferNewConnection="addNewConnection">
+            @transferDialogShow="setShowNewDialog">
         </new-postgresql-dialog>
         <new-oracle-dialog
             :showOracleDialog="showOracleDialog"
-            @transferDialogShow="setShowNewDialog"
-            @transferNewConnection="addNewConnection">
+            @transferDialogShow="setShowNewDialog">
         </new-oracle-dialog>
         <new-slqserver-dialog
             :showSQLServerDialog="showSQLServerDialog"
-            @transferDialogShow="setShowNewDialog"
-            @transferNewConnection="addNewConnection">
+            @transferDialogShow="setShowNewDialog">
         </new-slqserver-dialog>
         <new-mariadb-dialog
             :showMariaDBDialog="showMariaDBDialog"
-            @transferDialogShow="setShowNewDialog"
-            @transferNewConnection="addNewConnection">
+            @transferDialogShow="setShowNewDialog">
         </new-mariadb-dialog>
     </div>
 </template>
@@ -128,10 +123,6 @@ export default {
                 default:
                     break
             }
-        },
-        // 用于添加新的连接信息节点
-        addNewConnection: function(data) {
-            this.$emit('transferNewConnection', data)
         }
     },
     components: {

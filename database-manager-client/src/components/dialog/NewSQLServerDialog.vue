@@ -76,7 +76,11 @@ export default {
         },
         // 创建新的连接信息节点
         addNewConnectionItem: function() {
-            this.$emit('transferNewConnection', this.connectionInfo)
+            let obj = new Object()
+            // 添加新的连接信息
+            obj.target = 'new'
+            obj.info = this.connectionInfo
+            this.$set(this.$store.state, 'newConnectionInfo', obj)
         },
         testLink: function() {
             console.log('测试连接')

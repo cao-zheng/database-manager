@@ -78,10 +78,11 @@
 import Qs from 'qs'
 import NewMySQLDB from '../dialog/db/NewMySQLDB'
 import TreeItemRender from './js/TreeItemRender'
+import { mapState } from 'vuex'
 
 export default {
     name: 'TreeList',
-    props: ['isCollapsed', 'newConnectionInfo'],
+    props: ['isCollapsed'],
     data() {
         return {
             showNewMySQLDBDialog: false,
@@ -111,7 +112,10 @@ export default {
             return [
                 this.isCollapsed ? 'collapsed-menu' : ''
             ]
-        }
+        },
+        ...mapState({
+            newConnectionInfo: state => state.newConnectionInfo
+        })
     },
     methods: {
         setShowNewDBDialog: function(result) {
@@ -221,7 +225,7 @@ export default {
             let obj = new Object()
             obj.target = target
             obj.info = data.info
-            this.$emit('transferContentData', obj)
+            this.$set(this.$store.state, 'nowConnectionInfo', obj)
         },
         // 获取第四层级的单个节点
         getListForthItem: function(info, target) {
