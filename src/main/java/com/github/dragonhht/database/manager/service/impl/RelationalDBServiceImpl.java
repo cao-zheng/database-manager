@@ -138,4 +138,18 @@ public class RelationalDBServiceImpl implements RelationalDBService {
         }
         return ok;
     }
+
+    @Override
+    public boolean delDB(DBInfo dbInfo, ConnectionInfo connectionInfo) throws Exception {
+        DataSourceUtil.INSTANCE.setNowDataSource(connectionInfo);
+        boolean ok = false;
+        String sql = "DROP DATABASE " + dbInfo.getDbName();
+        try {
+            relationalService.ddl(sql);
+            ok = true;
+        } catch (Exception e) {
+            log.error("删除数据库失败", e);
+        }
+        return ok;
+    }
 }

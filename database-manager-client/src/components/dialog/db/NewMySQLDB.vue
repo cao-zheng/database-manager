@@ -83,8 +83,9 @@ export default {
     }
   },
   methods: {
-    cancel: function() {
-      this.$emit('transferDBDialogShow', transferShowData.transferDialogShowData(this.params.SqlPlatform.mysql, false))
+    cancel: function(result, title) {
+      this.$emit('transferDBDialogShow', 
+        transferShowData.transferDialogShowData(this.params.SqlPlatform.mysql, false, 'newDB', result, title))
     },
     save: function() {
       let data = JSON.parse((JSON.stringify(this.dbInfo)+JSON.stringify(this.info)).replace(/}{/,','))
@@ -98,7 +99,7 @@ export default {
         }).then(res => {
             if(res.data) {
               this.$Message.success('操作成功');
-              this.cancel()
+              this.cancel(true, data.dbName)
             } else {
               this.$Message.error('操作失败');
             }

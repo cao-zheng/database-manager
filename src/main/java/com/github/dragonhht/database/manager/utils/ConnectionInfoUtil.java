@@ -230,7 +230,7 @@ public final class ConnectionInfoUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        /*ConnectionInfo info = new ConnectionInfo();
+        ConnectionInfo info = new ConnectionInfo();
         info.setUserName("root");
         info.setDb("*");
         info.setHost("my.dragon.com");
@@ -238,11 +238,11 @@ public final class ConnectionInfoUtil {
         info.setPort(3307);
         info.setUserName("root");
         info.setPassword("123");
-        info.setDbName("link-1");
+        info.setName("test-link");
         saveConnectionInfo(info);
-        List<ConnectionInfo> infos = getAllConnection();
-        infos.forEach(System.out::println);*/
-        delConnectionInfo("ces");
+//        /*List<ConnectionInfo> infos = getAllConnection();
+//        infos.forEach(System.out::println);
+//        delConnectionInfo("ces");*/
     }
 
 }

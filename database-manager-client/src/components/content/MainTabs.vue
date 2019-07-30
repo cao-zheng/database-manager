@@ -22,10 +22,10 @@
 <script>
 import Tables from './Tables'
 import TableData from './TableData'
+import { mapState } from 'vuex'
 
 export default {
     name: 'MainTabs',
-    props: ['contentData'],
     data() {
         return {
             tabs: [
@@ -91,7 +91,10 @@ export default {
             set: function(size) {
                 this.tabSize = size
             }
-        }
+        },
+        ...mapState({
+            contentData: state => state.nowConnectionInfo
+        })
     },
     watch: {
         // 侦听contentData的变化
