@@ -194,6 +194,7 @@ export default {
                 },
                 dblclick: () => {
                     this.getListForthItems(data)
+                    this.$set(this.$store.state,'treeThirdList',obj);
                 },
                 //右键点击事件
                 contextmenu: (e) => {

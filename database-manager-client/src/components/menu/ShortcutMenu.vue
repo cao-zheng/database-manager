@@ -26,10 +26,10 @@
             </Dropdown>
         </div>
         <Divider class="menu-divider" type="vertical" />
-        <div class="menu-icon" :style="{}">
+        <div class="menu-icon" :style="{}" @click="showTableTab">
             <i class="iconfont icon-biaoge icon"></i>
         </div>
-        <div class="menu-icon">
+        <div class="menu-icon" @click="showViewTab">
             <i class="iconfont icon-shitu icon"></i>
         </div>
         <div class="menu-icon">
@@ -113,6 +113,26 @@ export default {
                 default:
                     break
             }
+        },
+        showTableTab: function(){
+            let target = this.$store.state.nowConnectionInfo.target
+            let treeThirdList = this.$store.state.treeThirdList
+
+            let obj = new Object()
+            obj.target = this.params.ShowTarget.table
+            obj.info = this.$store.state.nowConnectionInfo.info
+            this.$set(this.$store.state, 'nowConnectionInfo', obj)
+            if(treeThirdList.expand == false)treeThirdList.expand = true
+        },
+        showViewTab: function(){
+            let target = this.$store.state.nowConnectionInfo.target
+            let treeThirdList = this.$store.state.treeThirdList
+            
+            let obj = new Object()
+            obj.target = this.params.ShowTarget.view
+            obj.info = this.$store.state.nowConnectionInfo.info
+            this.$set(this.$store.state, 'nowConnectionInfo', obj)
+            if(treeThirdList.expand == false)treeThirdList.expand = true
         }
     },
     components: {

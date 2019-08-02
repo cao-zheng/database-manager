@@ -107,6 +107,7 @@ export default {
                     tab.info = newValue.info
                     tab.disabled = false
                     this.$set(this.tabs, 0, tab)
+                    this.activeTabName='0'
                 }
             },
             deep: true,
